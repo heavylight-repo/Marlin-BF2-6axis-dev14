@@ -207,7 +207,7 @@ void GcodeSuite::G28() {
 
   #if ENABLED(MARLIN_DEV_MODE)
     if (parser.seen('S')) {
-      LOOP_XYZ(a) set_axis_is_at_home((AxisEnum)a);
+      LOOP_NON_E(a) set_axis_is_at_home((AxisEnum)a);
       sync_plan_position();
       SERIAL_ECHOLNPGM("Simulated Homing");
       report_current_position();
@@ -295,8 +295,37 @@ void GcodeSuite::G28() {
   #else // NOT DELTA
 
     const bool homeX = parser.seen('X'), homeY = parser.seen('Y'), homeZ = parser.seen('Z'),
-               home_all = homeX == homeY && homeX == homeZ, // All or None
-               doX = home_all || homeX, doY = home_all || homeY, doZ = home_all || homeZ;
+                 #if NON_E_AXES > 3
+                 homeI = parser.seen('I'),
+                 #if NON_E_AXES > 4
+                   homeJ = parser.seen('J'),
+                   #if NON_E_AXES > 5
+                     homeK = parser.seen('K'),
+                   #endif
+                 #endif
+               #endif
+               home_all = homeX == homeY && homeX == homeZ
+                 #if NON_E_AXES > 3
+                   && homeX == homeI
+                   #if NON_E_AXES > 4
+                     && homeX == homeJ
+                     #if NON_E_AXES > 5
+                       && homeX == homeK
+                     #endif
+                   #endif
+                 #endif
+               , // All or None
+               doX = home_all || homeX, doY = home_all || homeY, doZ = home_all || homeZ
+                 #if NON_E_AXES > 3
+                   , doI = home_all || homeI
+                   #if NON_E_AXES > 4
+                     , doJ = home_all || homeJ
+                     #if NON_E_AXES > 5
+                       , doK = home_all || homeK
+                     #endif
+                   #endif
+                 #endif
+                 ;
 
     destination = current_position;
 
@@ -311,7 +340,17 @@ void GcodeSuite::G28() {
         ? (parser.seenval('R') ? parser.value_linear_units() : Z_HOMING_HEIGHT)
         : 0;
 
-    if (z_homing_height && (doX || doY || ENABLED(Z_SAFE_HOMING))) {
+    if (z_homing_height && (doX || doY 
+      #if NON_E_AXES > 3
+        || doI
+        #if NON_E_AXES > 4
+          || doJ
+          #if NON_E_AXES > 5
+            ||  doK
+          #endif
+        #endif
+      #endif
+    || ENABLED(Z_SAFE_HOMING))) {
       // Raise Z before homing any other axes and z is not already high enough (never lower z)
       destination.z = z_homing_height + (TEST(axis_known_position, Z_AXIS) ? 0.0f : current_position.z);
       if (destination.z > current_position.z) {
@@ -389,6 +428,16 @@ void GcodeSuite::G28() {
 
     #endif // Z_HOME_DIR < 0
 
+    #if NON_E_AXES > 3
+      if (doI) homeaxis(I_AXIS);
+      #if NON_E_AXES > 4
+        if (doJ) homeaxis(J_AXIS);
+        #if NON_E_AXES > 5
+          if (doK) homeaxis(K_AXIS);
+        #endif
+      #endif
+    #endif
+      
     sync_plan_position();
 
   #endif // !DELTA (G28)
@@ -462,7 +511,22 @@ void GcodeSuite::G28() {
     #if HAS_CURRENT_HOME(Y2)
       stepperY2.rms_current(tmc_save_current_Y2);
     #endif
-  #endif
+    #if NON_E_AXES > 3
+      #if HAS_CURRENT_HOME(I)
+        stepperI.rms_current(tmc_save_current_I);
+      #endif
+      #if NON_E_AXES > 4
+        #if HAS_CURRENT_HOME(J)
+          stepperJ.rms_current(tmc_save_current_J);
+        #endif
+        #if NON_E_AXES > 5
+          #if HAS_CURRENT_HOME(K)
+            stepperK.rms_current(tmc_save_current_K);
+          #endif
+        #endif
+      #endif
+    #endif
+  #endif // HAS_HOMING_CURRENT
 
   ui.refresh();
 
@@ -481,7 +545,7 @@ void GcodeSuite::G28() {
       X_AXIS, Y_AXIS, Z_AXIS,
       X_AXIS, Y_AXIS, Z_AXIS, Z_AXIS,
       E_AXIS, E_AXIS, E_AXIS, E_AXIS, E_AXIS, E_AXIS
-    };
+    }; // TODO: Add support for NON_E_AXES > 3
     for (uint8_t j = 1; j <= L64XX::chain[0]; j++) {
       const uint8_t cv = L64XX::chain[j];
       L64xxManager.set_param((L64XX_axis_t)cv, L6470_ABS_POS, stepper.position(L64XX_axis_xref[cv]));

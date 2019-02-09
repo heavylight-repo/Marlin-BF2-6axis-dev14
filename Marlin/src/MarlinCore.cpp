@@ -190,10 +190,10 @@ PGMSTR(M21_STR, "M21");
 PGMSTR(M23_STR, "M23 %s");
 PGMSTR(M24_STR, "M24");
 PGMSTR(SP_P_STR, " P");  PGMSTR(SP_T_STR, " T");
-PGMSTR(X_STR,     "X");  PGMSTR(Y_STR,     "Y");  PGMSTR(Z_STR,     "Z");  PGMSTR(E_STR,     "E");
-PGMSTR(X_LBL,     "X:"); PGMSTR(Y_LBL,     "Y:"); PGMSTR(Z_LBL,     "Z:"); PGMSTR(E_LBL,     "E:");
-PGMSTR(SP_X_STR, " X");  PGMSTR(SP_Y_STR, " Y");  PGMSTR(SP_Z_STR, " Z");  PGMSTR(SP_E_STR, " E");
-PGMSTR(SP_X_LBL, " X:"); PGMSTR(SP_Y_LBL, " Y:"); PGMSTR(SP_Z_LBL, " Z:"); PGMSTR(SP_E_LBL, " E:");
+PGMSTR(X_STR,     "X");  PGMSTR(Y_STR,     "Y");  PGMSTR(Z_STR,     "Z");  PGMSTR(I_STR,     "I");  PGMSTR(J_STR,     "J");  PGMSTR(K_STR,     "K");  PGMSTR(E_STR,     "E");
+PGMSTR(X_LBL,     "X:"); PGMSTR(Y_LBL,     "Y:"); PGMSTR(Z_LBL,     "Z:"); PGMSTR(I_LBL,     "I:"); PGMSTR(J_LBL,     "J:"); PGMSTR(K_LBL,     "K:"); PGMSTR(E_LBL,     "E:");
+PGMSTR(SP_X_STR, " X");  PGMSTR(SP_Y_STR, " Y");  PGMSTR(SP_Z_STR, " Z");  PGMSTR(SP_I_STR, " I");  PGMSTR(SP_J_STR, " J");  PGMSTR(SP_K_STR, " K");  PGMSTR(SP_E_STR, " E");
+PGMSTR(SP_X_LBL, " X:"); PGMSTR(SP_Y_LBL, " Y:"); PGMSTR(SP_Z_LBL, " Z:"); PGMSTR(SP_I_LBL, " I:"); PGMSTR(SP_J_LBL, " J:"); PGMSTR(SP_K_LBL, " K:"); PGMSTR(SP_E_LBL, " E:");
 
 MarlinState marlin_state = MF_INITIALIZING;
 
@@ -316,6 +316,17 @@ void enable_all_steppers() {
   ENABLE_AXIS_X();
   ENABLE_AXIS_Y();
   ENABLE_AXIS_Z();
+  #if NON_E_AXES > 3
+    // Marlin six axis support: 2019 - 2020 DerAndere
+    ENABLE_AXIS_I();
+    #if NON_E_AXES > 4
+      ENABLE_AXIS_J();
+      #if NON_E_AXES > 5
+        ENABLE_AXIS_K();
+      #endif
+    #endif
+  #endif
+  
   enable_e_steppers();
 }
 
@@ -464,6 +475,15 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
         if (ENABLED(DISABLE_INACTIVE_X)) DISABLE_AXIS_X();
         if (ENABLED(DISABLE_INACTIVE_Y)) DISABLE_AXIS_Y();
         if (ENABLED(DISABLE_INACTIVE_Z)) DISABLE_AXIS_Z();
+        #if NON_E_AXES > 3
+          if (ENABLED(DISABLE_INACTIVE_I)) DISABLE_AXIS_I();
+          #if NON_E_AXES > 4
+            if (ENABLED(DISABLE_INACTIVE_J)) DISABLE_AXIS_J();
+            #if NON_E_AXES > 5
+              if (ENABLED(DISABLE_INACTIVE_K)) DISABLE_AXIS_K();
+            #endif
+          #endif
+        #endif
         if (ENABLED(DISABLE_INACTIVE_E)) disable_e_steppers();
         #if BOTH(HAS_LCD_MENU, AUTO_BED_LEVELING_UBL)
           if (ubl.lcd_map_control) {

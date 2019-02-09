@@ -71,13 +71,36 @@
 #define X_MAX_LENGTH (X_MAX_POS - (X_MIN_POS))
 #define Y_MAX_LENGTH (Y_MAX_POS - (Y_MIN_POS))
 #define Z_MAX_LENGTH (Z_MAX_POS - (Z_MIN_POS))
-
+#if NON_E_AXES > 3
+  #define I_MAX_LENGTH (I_MAX_POS - (I_MIN_POS))
+  #if NON_E_AXES > 4
+    #define J_MAX_LENGTH (J_MAX_POS - (J_MIN_POS))
+    #if NON_E_AXES > 5
+      #define K_MAX_LENGTH (K_MAX_POS - (K_MIN_POS))
+    #endif
+  #endif
+#endif
 // Defined only if the sanity-check is bypassed
 #ifndef X_BED_SIZE
   #define X_BED_SIZE X_MAX_LENGTH
 #endif
 #ifndef Y_BED_SIZE
   #define Y_BED_SIZE Y_MAX_LENGTH
+#endif
+#if NON_E_AXES > 3
+  #ifndef I_SIZE
+    #define I_SIZE I_MAX_LENGTH
+  #endif
+  #if NON_E_AXES > 4
+    #ifndef J_SIZE
+      #define J_SIZE J_MAX_LENGTH
+    #endif
+    #if NON_E_AXES > 5
+      #ifndef K_SIZE
+        #define K_SIZE K_MAX_LENGTH
+      #endif
+    #endif
+  #endif
 #endif
 
 // Require 0,0 bed center for Delta and SCARA
@@ -88,14 +111,45 @@
 // Define center values for future use
 #define _X_HALF_BED ((X_BED_SIZE) / 2)
 #define _Y_HALF_BED ((Y_BED_SIZE) / 2)
+#if NON_E_AXES > 3
+  #define _I_HALF_IMAX ((I_SIZE) / 2)
+  #if NON_E_AXES > 4
+    #define _J_HALF_JMAX ((J_SIZE) / 2)
+    #if NON_E_AXES > 5
+      #define _K_HALF_KMAX ((K_SIZE) / 2)
+    #endif
+  #endif
+#endif
+
 #define X_CENTER TERN(BED_CENTER_AT_0_0, 0, _X_HALF_BED)
 #define Y_CENTER TERN(BED_CENTER_AT_0_0, 0, _Y_HALF_BED)
+#if NON_E_AXES > 3
+  #define I_CENTER TERN(BED_CENTER_AT_0_0, 0, _I_HALF_BED)
+  #if NON_E_AXES > 4
+    #define J_CENTER TERN(BED_CENTER_AT_0_0, 0, _J_HALF_BED)
+    #if NON_E_AXES > 5
+      #define K_CENTER TERN(BED_CENTER_AT_0_0, 0, _K_HALF_BED)
+    #endif
+  #endif
+#endif
 
 // Get the linear boundaries of the bed
 #define X_MIN_BED (X_CENTER - _X_HALF_BED)
 #define X_MAX_BED (X_MIN_BED + X_BED_SIZE)
 #define Y_MIN_BED (Y_CENTER - _Y_HALF_BED)
 #define Y_MAX_BED (Y_MIN_BED + Y_BED_SIZE)
+#if NON_E_AXES > 3
+  #define I_MINIM (I_CENTER - _I_HALF_IMAX)
+  #define I_MAXIM (I_MINIM + I_SIZE)
+  #if NON_E_AXES > 4
+    #define J_MINIM (J_CENTER - _J_HALF_IMAX)
+    #define J_MAXIM (J_MINIM + J_SIZE)
+    #if NON_E_AXES > 5
+      #define K_MINIM (K_CENTER - _K_HALF_IMAX)
+      #define K_MAXIM (K_MINIM + K_SIZE)
+    #endif
+  #endif
+#endif
 
 /**
  * Dual X Carriage
@@ -202,6 +256,15 @@
   #define Z_HOME_POS (Z_HOME_DIR < 0 ? Z_MIN_POS : Z_MAX_POS)
 #endif
 
+#if NON_E_AXES > 3
+  #define I_HOME_POS (I_HOME_DIR < 0 ? I_MIN_POS : I_MAX_POS)
+  #if NON_E_AXES > 4
+    #define J_HOME_POS (J_HOME_DIR < 0 ? J_MIN_POS : J_MAX_POS)
+    #if NON_E_AXES > 5
+      #define K_HOME_POS (K_HOME_DIR < 0 ? K_MIN_POS : K_MAX_POS)
+    #endif
+  #endif
+#endif
 /**
  * If DELTA_HEIGHT isn't defined use the old setting
  */
@@ -1221,6 +1284,15 @@
   #if ENABLED(USE_ZMAX_PLUG)
     #define ENDSTOPPULLUP_ZMAX
   #endif
+  #if ENABLED(USE_IMAX_PLUG)
+    #define ENDSTOPPULLUP_IMAX
+  #endif
+  #if ENABLED(USE_JMAX_PLUG)
+    #define ENDSTOPPULLUP_JMAX
+  #endif
+  #if ENABLED(USE_KMAX_PLUG)
+    #define ENDSTOPPULLUP_KMAX
+  #endif
   #if ENABLED(USE_XMIN_PLUG)
     #define ENDSTOPPULLUP_XMIN
   #endif
@@ -1229,6 +1301,15 @@
   #endif
   #if ENABLED(USE_ZMIN_PLUG)
     #define ENDSTOPPULLUP_ZMIN
+  #endif
+  #if ENABLED(USE_IMIN_PLUG)
+    #define ENDSTOPPULLUP_IMIN
+  #endif
+  #if ENABLED(USE_JMIN_PLUG)
+    #define ENDSTOPPULLUP_JMIN
+  #endif
+  #if ENABLED(USE_KMIN_PLUG)
+    #define ENDSTOPPULLUP_KMIN
   #endif
 #endif
 
@@ -1364,6 +1445,52 @@
 #if PIN_EXISTS(Z4_MS1)
   #define HAS_Z4_MS_PINS 1
 #endif
+
+#if NON_E_AXES > 3
+  #if PIN_EXISTS(I_ENABLE) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(I))
+    #define HAS_I_ENABLE 1
+  #endif
+  #if PIN_EXISTS(I_DIR)
+    #define HAS_I_DIR 1
+  #endif
+  #if PIN_EXISTS(I_STEP)
+    #define HAS_I_STEP 1
+  #endif
+  #if PIN_EXISTS(I_MS1)
+    #define HAS_I_MS_PINS 1
+  #endif
+
+  #if NON_E_AXES > 4
+  #if PIN_EXISTS(J_ENABLE) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(J))
+    #define HAS_J_ENABLE 1
+  #endif
+  #if PIN_EXISTS(J_DIR)
+    #define HAS_J_DIR 1
+  #endif
+  #if PIN_EXISTS(J_STEP)
+    #define HAS_J_STEP 1
+  #endif
+  #if PIN_EXISTS(J_MS1)
+    #define HAS_J_MS_PINS 1
+  #endif
+
+
+    #if NON_E_AXES > 5
+      #if PIN_EXISTS(K_ENABLE) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(K))
+        #define HAS_K_ENABLE 1
+      #endif
+      #if PIN_EXISTS(K_DIR)
+        #define HAS_K_DIR 1
+      #endif
+      #if PIN_EXISTS(K_STEP)
+        #define HAS_K_STEP 1
+      #endif
+      #if PIN_EXISTS(K_MS1)
+        #define HAS_K_MS_PINS 1
+      #endif
+    #endif // NON_E_AXES > 5
+  #endif // NON_E_AXES > 4
+#endif // NON_E_AXES > 3
 
 // Extruder steppers and solenoids
 #if PIN_EXISTS(E0_ENABLE) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E0))
@@ -1616,6 +1743,24 @@
 #endif
 #if PIN_EXISTS(Z4_MAX)
   #define HAS_Z4_MAX 1
+#endif
+#if _HAS_STOP(I,MIN)
+  #define HAS_I_MIN 1
+#endif
+#if _HAS_STOP(I,MAX)
+  #define HAS_I_MAX 1
+#endif
+#if _HAS_STOP(J,MIN)
+  #define HAS_J_MIN 1
+#endif
+#if _HAS_STOP(J,MAX)
+  #define HAS_J_MAX 1
+#endif
+#if _HAS_STOP(K,MIN)
+  #define HAS_K_MIN 1
+#endif
+#if _HAS_STOP(K,MAX)
+  #define HAS_K_MAX 1
 #endif
 #if HAS_CUSTOM_PROBE_PIN && PIN_EXISTS(Z_MIN_PROBE)
   #define HAS_Z_MIN_PROBE_PIN 1
@@ -1888,7 +2033,7 @@
 #if PIN_EXISTS(DIGIPOTSS)
   #define HAS_DIGIPOTSS 1
 #endif
-#if  ANY_PIN(MOTOR_CURRENT_PWM_X, MOTOR_CURRENT_PWM_Y, MOTOR_CURRENT_PWM_XY, MOTOR_CURRENT_PWM_Z, MOTOR_CURRENT_PWM_E)
+#if  ANY_PIN(MOTOR_CURRENT_PWM_X, MOTOR_CURRENT_PWM_Y, MOTOR_CURRENT_PWM_XY, MOTOR_CURRENT_PWM_Z, MOTOR_CURRENT_PWM_I, MOTOR_CURRENT_PWM_J, MOTOR_CURRENT_PWM_K, MOTOR_CURRENT_PWM_E)
   #define HAS_MOTOR_CURRENT_PWM 1
 #endif
 
@@ -1898,7 +2043,7 @@
 #if HAS_E0_MS_PINS || HAS_E1_MS_PINS || HAS_E2_MS_PINS || HAS_E3_MS_PINS || HAS_E4_MS_PINS || HAS_E5_MS_PINS || HAS_E6_MS_PINS || HAS_E7_MS_PINS
   #define HAS_SOME_E_MS_PINS 1
 #endif
-#if HAS_X_MS_PINS || HAS_X2_MS_PINS || HAS_Y_MS_PINS || HAS_Y2_MS_PINS || HAS_SOME_Z_MICROSTEPS || HAS_SOME_E_MS_PINS
+#if HAS_X_MS_PINS || HAS_X2_MS_PINS || HAS_Y_MS_PINS || HAS_Y2_MS_PINS || HAS_SOME_Z_MICROSTEPS || HAS_I_MS_PINS || HAS_J_MS_PINS || HAS_K_MS_PINS || HAS_SOME_E_MS_PINS
   #define HAS_MICROSTEPS 1
 #endif
 

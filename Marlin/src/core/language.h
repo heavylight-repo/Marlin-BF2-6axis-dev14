@@ -154,6 +154,12 @@
 #define STR_Z3_MAX                          "z3_max"
 #define STR_Z4_MIN                          "z4_min"
 #define STR_Z4_MAX                          "z4_max"
+#define STR_I_MIN                           "i_min"
+#define STR_I_MAX                           "i_max"
+#define STR_J_MIN                           "j_min"
+#define STR_J_MAX                           "j_max"
+#define STR_K_MIN                           "k_min"
+#define STR_K_MAX                           "k_max"
 #define STR_Z_PROBE                         "z_probe"
 #define STR_FILAMENT_RUNOUT_SENSOR          "filament"
 #define STR_PROBE_OFFSET                    "Probe Offset"
@@ -277,6 +283,9 @@
 #define STR_X "X"
 #define STR_Y "Y"
 #define STR_Z "Z"
+#define STR_I "I"
+#define STR_J "J"
+#define STR_K "K"
 #define STR_E "E"
 #if IS_KINEMATIC
   #define STR_A "A"
@@ -296,6 +305,9 @@
 #define LCD_STR_A STR_A
 #define LCD_STR_B STR_B
 #define LCD_STR_C STR_C
+#define LCD_STR_I STR_I
+#define LCD_STR_J STR_J
+#define LCD_STR_K STR_K
 #define LCD_STR_E STR_E
 
 #if HAS_CHARACTER_LCD
