@@ -946,13 +946,6 @@ struct XYZEval {
 //
 template<typename T>
 struct XYZval {
-#else // NON_E_AXES < 4
-
-//
-// XYZ coordinates, counters, etc.
-//
-template<typename T>
-struct XYZval {
   union {
     struct { T x, y, z; };
     struct { T a, b, c; };
