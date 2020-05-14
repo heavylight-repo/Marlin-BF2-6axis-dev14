@@ -37,7 +37,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V80"
+#define EEPROM_VERSION "V81"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -1911,14 +1911,20 @@ void MarlinSettings::postprocess() {
             #if AXIS_IS_TMC(Z4)
               SET_CURR(Z4);
             #endif
-            #if AXIS_IS_TMC(I)
-              SET_CURR(I);
-            #endif
-            #if AXIS_IS_TMC(J)
-              SET_CURR(J);
-            #endif
-            #if AXIS_IS_TMC(K)
-              SET_CURR(K);
+            #if NON_E_AXES > 3
+              #if AXIS_IS_TMC(I)
+                SET_CURR(I);
+              #endif
+              #if NON_E_AXES > 4
+                #if AXIS_IS_TMC(J)
+                  SET_CURR(J);
+                #endif
+                #if NON_E_AXES > 5
+                  #if AXIS_IS_TMC(K)
+                    SET_CURR(K);
+                  #endif
+                #endif
+              #endif
             #endif
             #if AXIS_IS_TMC(E0)
               SET_CURR(E0);
@@ -2082,14 +2088,20 @@ void MarlinSettings::postprocess() {
             #if AXIS_HAS_STEALTHCHOP(Z4)
               SET_STEPPING_MODE(Z4);
             #endif
-            #if AXIS_HAS_STEALTHCHOP(I)
-              SET_STEPPING_MODE(I);
-            #endif
-            #if AXIS_HAS_STEALTHCHOP(J)
-              SET_STEPPING_MODE(J);
-            #endif
-            #if AXIS_HAS_STEALTHCHOP(K)
-              SET_STEPPING_MODE(K);
+            #if NON_E_AXES > 3
+              #if AXIS_HAS_STEALTHCHOP(I)
+                SET_STEPPING_MODE(I);
+              #endif
+              #if NON_E_AXES > 4
+                #if AXIS_HAS_STEALTHCHOP(J)
+                  SET_STEPPING_MODE(J);
+                #endif
+                #if NON_E_AXES > 5
+                  #if AXIS_HAS_STEALTHCHOP(K)
+                    SET_STEPPING_MODE(K);
+                  #endif
+                #endif
+              #endif
             #endif
             #if AXIS_HAS_STEALTHCHOP(E0)
               SET_STEPPING_MODE(E0);
@@ -3005,15 +3017,15 @@ void MarlinSettings::reset() {
         , SP_Y_STR, LINEAR_UNIT(planner.max_jerk.y)
         , SP_Z_STR, LINEAR_UNIT(planner.max_jerk.z)
         #if NON_E_AXES > 3
-        , SP_I_STR, LINEAR_UNIT(planner.max_jerk.i)
-        #if NON_E_AXES > 4
-          , SP_J_STR, LINEAR_UNIT(planner.max_jerk.j)
-          #if NON_E_AXES > 5
-            , SP_K_STR, LINEAR_UNIT(planner.max_jerk.k)
+          , SP_I_STR, LINEAR_UNIT(planner.max_jerk.i)
+          #if NON_E_AXES > 4
+            , SP_J_STR, LINEAR_UNIT(planner.max_jerk.j)
+            #if NON_E_AXES > 5
+              , SP_K_STR, LINEAR_UNIT(planner.max_jerk.k)
+            #endif
           #endif
         #endif
-      #endif
-        
+
         #if HAS_CLASSIC_E_JERK
           , SP_E_STR, LINEAR_UNIT(planner.max_jerk.e)
         #endif
@@ -3374,14 +3386,20 @@ void MarlinSettings::reset() {
         #if AXIS_IS_TMC(Z)
           SERIAL_ECHOPAIR_P(SP_Z_STR, stepperZ.getMilliamps());
         #endif
-        #if NON_E_AXES > 3 && AXIS_IS_TMC(I)
-          SERIAL_ECHOPAIR_P(SP_I_STR, stepperZ.getMilliamps());
-        #endif
-        #if NON_E_AXES > 4 && AXIS_IS_TMC(J)
-          SERIAL_ECHOPAIR_P(SP_J_STR, stepperZ.getMilliamps());
-        #endif
-        #if NON_E_AXES > 5 && AXIS_IS_TMC(K)
-          SERIAL_ECHOPAIR_P(SP_K_STR, stepperZ.getMilliamps());
+        #if NON_E_AXES > 3 
+          #if AXIS_IS_TMC(I)
+            SERIAL_ECHOPAIR_P(SP_I_STR, stepperZ.getMilliamps());
+          #endif
+          #if NON_E_AXES > 4 
+            #if AXIS_IS_TMC(J)
+              SERIAL_ECHOPAIR_P(SP_J_STR, stepperZ.getMilliamps());
+            #endif
+            #if NON_E_AXES > 5 
+              #if AXIS_IS_TMC(K)
+                SERIAL_ECHOPAIR_P(SP_K_STR, stepperZ.getMilliamps());
+              #endif
+            #endif
+          #endif
         #endif
         SERIAL_EOL();
       #endif
@@ -3422,8 +3440,8 @@ void MarlinSettings::reset() {
             SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.getMilliamps());
           #endif
           #if NON_E_AXES > 5
-            say_M906(forReplay);
             #if AXIS_IS_TMC(K)
+              say_M906(forReplay);
               SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.getMilliamps());
             #endif
           #endif
