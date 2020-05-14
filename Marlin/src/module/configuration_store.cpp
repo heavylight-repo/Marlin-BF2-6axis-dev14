@@ -3733,11 +3733,11 @@ void MarlinSettings::reset() {
           if (chop_y) SERIAL_ECHOPGM_P(SP_Y_STR);
           if (chop_z) SERIAL_ECHOPGM_P(SP_Z_STR);
           #if NON_E_AXES > 3
-            if (chop_i) SERIAL_ECHO_P(SP_I_STR);
+            if (chop_i) SERIAL_ECHOPGM_P(SP_I_STR);
             #if NON_E_AXES > 4
-              if (chop_j) SERIAL_ECHO_P(SP_J_STR);
+              if (chop_j) SERIAL_ECHOPGM_P(SP_J_STR);
               #if NON_E_AXES > 5
-                if (chop_k) SERIAL_ECHO_P(SP_K_STR);
+                if (chop_k) SERIAL_ECHOPGM_P(SP_K_STR);
               #endif
             #endif
           #endif
