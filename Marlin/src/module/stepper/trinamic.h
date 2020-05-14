@@ -49,9 +49,9 @@
 #if NON_E_AXES > 3
   #define TMC_I_LABEL 'I', '0'
   #if NON_E_AXES > 4
-    #define TMC_I_LABEL 'J', '0'
+    #define TMC_J_LABEL 'J', '0'
     #if NON_E_AXES > 5
-      #define TMC_I_LABEL 'K', '0'
+      #define TMC_K_LABEL 'K', '0'
     #endif
   #endif
 #endif

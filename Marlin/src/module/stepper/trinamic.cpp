@@ -35,7 +35,18 @@
 #include <HardwareSerial.h>
 #include <SPI.h>
 
-enum StealthIndex : uint8_t { STEALTH_AXIS_XY, STEALTH_AXIS_Z, STEALTH_AXIS_E };
+enum StealthIndex : uint8_t { STEALTH_AXIS_XY, STEALTH_AXIS_Z,
+  #if NON_E_AXES > 3
+    STEALTH_AXIS_I,
+    #if NON_E_AXES > 4
+      STEALTH_AXIS_J,
+      #if NON_E_AXES > 5
+        STEALTH_AXIS_K,
+      #endif
+    #endif
+  #endif
+  STEALTH_AXIS_E
+};
 #define TMC_INIT(ST, STEALTH_INDEX) tmc_init(stepper##ST, ST##_CURRENT, ST##_MICROSTEPS, ST##_HYBRID_THRESHOLD, stealthchop_by_axis[STEALTH_INDEX])
 
 //   IC = TMC model number
@@ -90,6 +101,21 @@ enum StealthIndex : uint8_t { STEALTH_AXIS_XY, STEALTH_AXIS_Z, STEALTH_AXIS_E };
 #endif
 #if AXIS_HAS_SPI(Z4)
   TMC_SPI_DEFINE(Z4, Z);
+#endif
+#if NON_E_AXES > 3
+  #if AXIS_HAS_SPI(J)
+    TMC_SPI_DEFINE(J, J);
+  #endif
+  #if NON_E_AXES > 4
+    #if AXIS_HAS_SPI(K)
+      TMC_SPI_DEFINE(K, K);
+    #endif
+    #if NON_E_AXES > 5
+      #if AXIS_HAS_SPI(K)
+        TMC_SPI_DEFINE(K, K);
+      #endif
+    #endif
+  #endif
 #endif
 #if AXIS_HAS_SPI(E0)
   TMC_SPI_DEFINE_E(0);
