@@ -25,7 +25,11 @@
   #define __has_include(...) 1
 #endif
 
-#define NUM_AXIS (NON_E_AXES + 1)
+#if EXTRUDERS == 0
+  #define NUM_AXIS (NON_E_AXES)
+#else
+  #define NUM_AXIS (NON_E_AXES + 1)
+#endif
 #define ABCE 4
 #define XYZE 4
 #define ABC  3
