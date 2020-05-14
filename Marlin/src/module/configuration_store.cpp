@@ -1005,6 +1005,21 @@ void MarlinSettings::postprocess() {
         #if AXIS_IS_TMC(Z4)
           tmc_stepper_current.Z4 = stepperZ4.getMilliamps();
         #endif
+        #if NON_E_AXES > 3
+          #if AXIS_IS_TMC(Z)
+            tmc_stepper_current.I = stepperI.getMilliamps();
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_IS_TMC(I)
+              tmc_stepper_current.J = stepperJ.getMilliamps();
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_IS_TMC(K)
+                tmc_stepper_current.K = stepperK.getMilliamps();
+              #endif
+            #endif
+          #endif
+        #endif
         #if MAX_EXTRUDERS
           #if AXIS_IS_TMC(E0)
             tmc_stepper_current.E0 = stepperE0.getMilliamps();
@@ -1090,6 +1105,21 @@ void MarlinSettings::postprocess() {
         #endif
         #if AXIS_HAS_STEALTHCHOP(Z4)
           tmc_hybrid_threshold.Z4 = stepperZ4.get_pwm_thrs();
+        #endif
+        #if NON_E_AXES > 3
+          #if AXIS_HAS_STEALTHCHOP(I)
+            tmc_hybrid_threshold.I = stepperI.get_pwm_thrs();
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_HAS_STEALTHCHOP(J)
+              tmc_hybrid_threshold.J = stepperJ.get_pwm_thrs();
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_HAS_STEALTHCHOP(K)
+                tmc_hybrid_threshold.K = stepperK.get_pwm_thrs();
+              #endif
+            #endif
+          #endif
         #endif
         #if MAX_EXTRUDERS
           #if AXIS_HAS_STEALTHCHOP(E0)
@@ -3388,15 +3418,15 @@ void MarlinSettings::reset() {
         #endif
         #if NON_E_AXES > 3 
           #if AXIS_IS_TMC(I)
-            SERIAL_ECHOPAIR_P(SP_I_STR, stepperZ.getMilliamps());
+            SERIAL_ECHOPAIR_P(SP_I_STR, stepperI.getMilliamps());
           #endif
           #if NON_E_AXES > 4 
             #if AXIS_IS_TMC(J)
-              SERIAL_ECHOPAIR_P(SP_J_STR, stepperZ.getMilliamps());
+              SERIAL_ECHOPAIR_P(SP_J_STR, stepperJ.getMilliamps());
             #endif
             #if NON_E_AXES > 5 
               #if AXIS_IS_TMC(K)
-                SERIAL_ECHOPAIR_P(SP_K_STR, stepperZ.getMilliamps());
+                SERIAL_ECHOPAIR_P(SP_K_STR, stepperK.getMilliamps());
               #endif
             #endif
           #endif
@@ -3525,20 +3555,24 @@ void MarlinSettings::reset() {
           say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.get_pwm_thrs());
         #endif
-
-        #if AXIS_HAS_STEALTHCHOP(I)
-          say_M913(forReplay);
-          SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.get_pwm_thrs());
+        #if NON_E_AXES > 3
+          #if AXIS_HAS_STEALTHCHOP(I)
+            say_M913(forReplay);
+            SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.get_pwm_thrs());
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_HAS_STEALTHCHOP(J)
+              say_M913(forReplay);
+              SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.get_pwm_thrs());
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_HAS_STEALTHCHOP(K)
+                say_M913(forReplay);
+                SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.get_pwm_thrs());
+              #endif
+            #endif
+          #endif
         #endif
-        #if AXIS_HAS_STEALTHCHOP(J)
-          say_M913(forReplay);
-          SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.get_pwm_thrs());
-        #endif
-        #if AXIS_HAS_STEALTHCHOP(K)
-          say_M913(forReplay);
-          SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.get_pwm_thrs());
-        #endif
-
         #if AXIS_HAS_STEALTHCHOP(E0)
           say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T0 E", stepperE0.get_pwm_thrs());
@@ -3621,21 +3655,23 @@ void MarlinSettings::reset() {
           say_M914();
           SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.homing_threshold());
         #endif
-
-        #if I_SENSORLESS
-          CONFIG_ECHO_START();
-          say_M914();
-          SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.homing_threshold());
+        #if NON_E_AXES > 3
+          #if I_SENSORLESS
+            CONFIG_ECHO_START();
+            say_M914();
+            SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.homing_threshold());
+          #endif
+          #if NON_E_AXES > 4
+            #if J_SENSORLESS
+              SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.homing_threshold());
+            #endif
+            #if NON_E_AXES > 5
+              #if K_SENSORLESS
+                SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.homing_threshold());
+              #endif
+            #endif
+          #endif
         #endif
-
-        #if J_SENSORLESS
-          SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.homing_threshold());
-        #endif
-
-        #if K_SENSORLESS
-          SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.homing_threshold());
-        #endif
-
 
       #endif // USE_SENSORLESS
 
@@ -3659,30 +3695,52 @@ void MarlinSettings::reset() {
         #else
           constexpr bool chop_z = false;
         #endif
-        #if AXIS_HAS_STEALTHCHOP(I)
-          const bool chop_i = stepperI.get_stealthChop_status();
-        #else
-          constexpr bool chop_i = false;
-        #endif
-        #if AXIS_HAS_STEALTHCHOP(J)
-          const bool chop_j = stepperJ.get_stealthChop_status();
-        #else
-          constexpr bool chop_j = false;
-        #endif
-        #if AXIS_HAS_STEALTHCHOP(K)
-          const bool chop_k = stepperK.get_stealthChop_status();
-        #else
-          constexpr bool chop_k = false;
+        #if NON_E_AXES > 3
+          #if AXIS_HAS_STEALTHCHOP(I)
+            const bool chop_i = stepperI.get_stealthChop_status();
+          #else
+            constexpr bool chop_i = false;
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_HAS_STEALTHCHOP(J)
+              const bool chop_j = stepperJ.get_stealthChop_status();
+            #else
+              constexpr bool chop_j = false;
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_HAS_STEALTHCHOP(K)
+                const bool chop_k = stepperK.get_stealthChop_status();
+              #else
+                constexpr bool chop_k = false;
+              #endif
+            #endif
+          #endif
         #endif
 
-        if (chop_x || chop_y || chop_z || chop_i || chop_j || chop_k) {
+        if (chop_x || chop_y || chop_z
+          #if NON_E_AXES > 3
+            || chop_i
+            #if NON_E_AXES > 4
+              || chop_j
+              #if NON_E_AXES > 5
+                || chop_k
+              #endif
+            #endif
+          #endif
+        ) {
           say_M569(forReplay);
           if (chop_x) SERIAL_ECHOPGM_P(SP_X_STR);
           if (chop_y) SERIAL_ECHOPGM_P(SP_Y_STR);
           if (chop_z) SERIAL_ECHOPGM_P(SP_Z_STR);
-          if (chop_i) SERIAL_ECHO_P(SP_I_STR);
-          if (chop_j) SERIAL_ECHO_P(SP_J_STR);
-          if (chop_k) SERIAL_ECHO_P(SP_K_STR);
+          #if NON_E_AXES > 3
+            if (chop_i) SERIAL_ECHO_P(SP_I_STR);
+            #if NON_E_AXES > 4
+              if (chop_j) SERIAL_ECHO_P(SP_J_STR);
+              #if NON_E_AXES > 5
+                if (chop_k) SERIAL_ECHO_P(SP_K_STR);
+              #endif
+            #endif
+          #endif
           SERIAL_EOL();
         }
 

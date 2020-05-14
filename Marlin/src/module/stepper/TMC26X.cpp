@@ -60,6 +60,21 @@
 #if AXIS_DRIVER_TYPE_Z4(TMC26X)
   _TMC26X_DEFINE(Z4);
 #endif
+#if NON_E_AXES > 3
+  #if AXIS_DRIVER_TYPE_I(TMC26X)
+    _TMC26X_DEFINE(I);
+  #endif
+  #if NON_E_AXES > 4
+    #if AXIS_DRIVER_TYPE_J(TMC26X)
+      _TMC26X_DEFINE(J);
+    #endif
+    #if NON_E_AXES > 5
+      #if AXIS_DRIVER_TYPE_K(TMC26X)
+        _TMC26X_DEFINE(K);
+      #endif
+    #endif
+  #endif
+#endif
 #if AXIS_DRIVER_TYPE_E0(TMC26X)
   _TMC26X_DEFINE(E0);
 #endif
