@@ -411,6 +411,19 @@ xyze_int8_t Stepper::count_direction{0};
   #define Z_APPLY_STEP(v,Q) Z_STEP_WRITE(v)
 #endif
 
+#if NON_E_AXES > 3
+  #define I_APPLY_DIR(v,Q) I_DIR_WRITE(v)
+  #define I_APPLY_STEP(v,Q) I_STEP_WRITE(v)
+  #if NON_E_AXES > 4
+    #define J_APPLY_DIR(v,Q) J_DIR_WRITE(v)
+    #define J_APPLY_STEP(v,Q) J_STEP_WRITE(v)
+    #if NON_E_AXES > 5
+      #define K_APPLY_DIR(v,Q) K_DIR_WRITE(v)
+      #define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+    #endif
+  #endif
+#endif
+
 #if DISABLED(MIXING_EXTRUDER)
   #define E_APPLY_STEP(v,Q) E_STEP_WRITE(stepper_extruder, v)
 #endif

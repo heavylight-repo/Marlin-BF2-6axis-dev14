@@ -1319,9 +1319,15 @@ void Planner::check_axes_activity() {
   if (TERN0(DISABLE_X, !axis_active.x)) DISABLE_AXIS_X();
   if (TERN0(DISABLE_Y, !axis_active.y)) DISABLE_AXIS_Y();
   if (TERN0(DISABLE_Z, !axis_active.z)) DISABLE_AXIS_Z();
-  if (TERN0(DISABLE_I, !axis_active.i)) DISABLE_AXIS_I();
-  if (TERN0(DISABLE_J, !axis_active.j)) DISABLE_AXIS_J();
-  if (TERN0(DISABLE_K, !axis_active.k)) DISABLE_AXIS_K();
+  #if NON_E_AXES > 3
+    if (TERN0(DISABLE_I, !axis_active.i)) DISABLE_AXIS_I();
+    #if NON_E_AXES > 4
+      if (TERN0(DISABLE_J, !axis_active.j)) DISABLE_AXIS_J();
+      #if NON_E_AXES > 5
+        if (TERN0(DISABLE_K, !axis_active.k)) DISABLE_AXIS_K();
+      #endif
+    #endif
+  #endif
   if (TERN0(DISABLE_E, !axis_active.e)) disable_e_steppers();
 
   //
@@ -1699,6 +1705,15 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
   const int32_t da = target.a - position.a,
                 db = target.b - position.b,
                 dc = target.c - position.c;
+  #if NON_E_AXES > 3
+    const int32_t di = target.i - position.i;
+    #if NON_E_AXES > 4
+      const int32_t dj = target.j - position.j;
+      #if NON_E_AXES > 5
+        const int32_t dk = target.k - position.k;
+      #endif
+    #endif
+  #endif
 
   #if EXTRUDERS
     int32_t de = target.e - position.e;
@@ -1867,11 +1882,11 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     steps_dist_mm.b = db * steps_to_mm[B_AXIS];
     steps_dist_mm.c = dc * steps_to_mm[C_AXIS];
     #if NON_E_AXES > 3
-      delta_mm.i = di * steps_to_mm[I_AXIS];
+      steps_dist_mm.i = di * steps_to_mm[I_AXIS];
       #if NON_E_AXES > 4
-        delta_mm.j = dj * steps_to_mm[J_AXIS];
+        steps_dist_mm.j = dj * steps_to_mm[J_AXIS];
         #if NON_E_AXES > 5
-          delta_mm.k = dk * steps_to_mm[K_AXIS];
+          steps_dist_mm.k = dk * steps_to_mm[K_AXIS];
         #endif
       #endif
     #endif
@@ -1902,18 +1917,19 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     );
   }
   else {
-    if (millimeters)
+    if (millimeters) {
       block->millimeters = millimeters;
-    else
+    }
+    else {
       block->millimeters = SQRT(
         #if CORE_IS_XY
           sq(steps_dist_mm.head.x) + sq(steps_dist_mm.head.y) + sq(steps_dist_mm.z)
           #if NON_E_AXES > 3
-            + sq(delta_mm[I_AXIS])
+            + sq(steps_dist_mm.i)
             #if NON_E_AXES > 4
-            + sq(delta_mm[J_AXIS])
+              + sq(steps_dist_mm.j)
               #if NON_E_AXES > 5
-              + sq(delta_mm[K_AXIS])
+                + sq(steps_dist_mm.k)
               #endif
             #endif
           #endif
@@ -1921,11 +1937,11 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
         #elif CORE_IS_XZ
           sq(steps_dist_mm.head.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.head.z)
           #if NON_E_AXES > 3
-            + sq(delta_mm[I_AXIS])
+            + sq(steps_dist_mm.i)
             #if NON_E_AXES > 4
-            + sq(delta_mm[J_AXIS])
+              + sq(steps_dist_mm.j)
               #if NON_E_AXES > 5
-              + sq(delta_mm[K_AXIS])
+                + sq(steps_dist_mm.k)
               #endif
             #endif
           #endif
@@ -1933,41 +1949,55 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
         #elif CORE_IS_YZ
           sq(steps_dist_mm.x) + sq(steps_dist_mm.head.y) + sq(steps_dist_mm.head.z)
           #if NON_E_AXES > 3
-            + sq(delta_mm[I_AXIS])
+            + sq(steps_dist_mm.i)
             #if NON_E_AXES > 4
-            + sq(delta_mm[J_AXIS])
+              + sq(steps_dist_mm.j)
               #if NON_E_AXES > 5
-              + sq(delta_mm[K_AXIS])
+                + sq(steps_dist_mm.k)
               #endif
             #endif
           #endif
 
-       #elif defined(ASYNC_SECONDARY_AXES)
+        #elif defined(ASYNC_SECONDARY_AXES)
          // XYZ vector magnitude. If one of the secondary axes IJK moves further
          // than the XYZ vector magnitude, take the largest single-axis move, instead.
-         sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) + sq(delta_mm[Z_AXIS]) > _MAX(sq(delta_mm[I_AXIS]), sq(delta_mm[J_AXIS]), sq(delta_mm[K_AXIS]))
-           ? sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) + sq(delta_mm[Z_AXIS])
-           : _MAX(sq(delta_mm[I_AXIS]), sq(delta_mm[J_AXIS]), sq(delta_mm[K_AXIS]));
+          #if NON_E_AXES == 6
+            sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z) > _MAX(sq(steps_dist_mm.i), sq(steps_dist_mm.j), sq(steps_dist_mm.k))
+              ? sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z)
+              : _MAX(sq(steps_dist_mm.i), sq(steps_dist_mm.j), sq(steps_dist_mm.k));
+          #elif NON_E_AXES == 5
+            sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z) > _MAX(sq(steps_dist_mm.i), sq(steps_dist_mm.j)))
+              ? sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z)
+              : _MAX(sq(steps_dist_mm.i), sq(steps_dist_mm.j)));
+          #elif NON_E_AXES == 4
+            sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z) > sq(steps_dist_mm.i)))
+              ? sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z)
+              : sq(steps_dist_mm.i);
+          #else
+            sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z)
+          #endif
 
-       #elif defined(FOAMCUTTER_XY_IJ)
-         // return the largest distance move from either X/Y or I/J plane
-         sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS]) > sq(delta_mm[I_AXIS]) + sq(delta_mm[J_AXIS])
-           ? sq(delta_mm[X_AXIS]) + sq(delta_mm[Y_AXIS])
-           : sq(delta_mm[I_AXIS]) + sq(delta_mm[J_AXIS]);
+
+        #elif defined(FOAMCUTTER_XY_IJ)
+          // return the largest distance move from either X/Y or I/J plane
+          sq(steps_dist_mm.x) + sq(steps_dist_mm.y) > sq(steps_dist_mm.i) + sq(steps_dist_mm.j)
+            ? sq(steps_dist_mm.x) + sq(steps_dist_mm.y)
+            : sq(steps_dist_mm.i) + sq(steps_dist_mm.j)
 
         #else
           sq(steps_dist_mm.x) + sq(steps_dist_mm.y) + sq(steps_dist_mm.z)
           #if NON_E_AXES > 3
-            + sq(delta_mm.i)
+            + sq(steps_dist_mm.i)
             #if NON_E_AXES > 4
-              + sq(delta_mm.j)
+              + sq(steps_dist_mm.j)
               #if NON_E_AXES > 5
-                + sq(delta_mm.k)
+                + sq(steps_dist_mm.k)
               #endif
             #endif
           #endif
+        #endif
       );
-
+    }
     /**
      * At this point at least one of the axes has more steps than
      * MIN_STEPS_PER_SEGMENT, ensuring the segment won't get dropped as

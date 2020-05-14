@@ -1418,20 +1418,16 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
  * Homing
  */
 constexpr float hbm[] = HOMING_BUMP_MM;
-static_assert(COUNT(hbm) == XYZ, "HOMING_BUMP_MM requires X, Y, and Z elements.");
+static_assert(COUNT(hbm) == NON_E_AXES, "HOMING_BUMP_MM requires X, Y, and Z elements.");
 static_assert(hbm[X_AXIS] >= 0, "HOMING_BUMP_MM.X must be greater than or equal to 0.");
 static_assert(hbm[Y_AXIS] >= 0, "HOMING_BUMP_MM.Y must be greater than or equal to 0.");
 static_assert(hbm[Z_AXIS] >= 0, "HOMING_BUMP_MM.Z must be greater than or equal to 0.");
 #if NON_E_AXES > 3
-  #if I_HOME_BUMP_MM < 0
-    #error "I_HOME_BUMP_MM must be greater than or equal to 0."
-  #elif NON_E_AXES > 4
-    #if J_HOME_BUMP_MM < 0
-      #error "J_HOME_BUMP_MM must be greater than or equal to 0."
-    #elif NON_E_AXES > 5
-      #if K_HOME_BUMP_MM < 0
-        #error "K_HOME_BUMP_MM must be greater than or equal to 0."
-      #endif
+  static_assert(hbm[I_AXIS] >= 0, "HOMING_BUMP_MM.I must be greater than or equal to 0.");
+  #if NON_E_AXES > 4
+    static_assert(hbm[J_AXIS] >= 0, "HOMING_BUMP_MM.J must be greater than or equal to 0.");
+    #if NON_E_AXES > 5
+      static_assert(hbm[K_AXIS] >= 0, "HOMING_BUMP_MM.K must be greater than or equal to 0.");
     #endif
   #endif
 #endif
@@ -2195,12 +2191,6 @@ static_assert(hbm[Z_AXIS] >= 0, "HOMING_BUMP_MM.Z must be greater than or equal 
   #error "An SPI driven TMC driver on Z3 requires Z3_CS_PIN."
 #elif INVALID_TMC_SPI(Z4)
   #error "An SPI driven TMC driver on Z4 requires Z4_CS_PIN."
-#elif NON_E_AXES > 3 && INVALID_TMC_SPI(I)
-  #error "An SPI driven TMC on I requires I_CS_PIN."
-#elif NON_E_AXES > 4 && INVALID_TMC_SPI(J)
-  #error "An SPI driven TMC on J requires J_CS_PIN."
-#elif NON_E_AXES > 5 && INVALID_TMC_SPI(K)
-  #error "An SPI driven TMC on K requires K_CS_PIN."
 #elif INVALID_TMC_SPI(E0)
   #error "An SPI driven TMC driver on E0 requires E0_CS_PIN."
 #elif INVALID_TMC_SPI(E1)
@@ -2217,6 +2207,21 @@ static_assert(hbm[Z_AXIS] >= 0, "HOMING_BUMP_MM.Z must be greater than or equal 
   #error "An SPI driven TMC driver on E6 requires E6_CS_PIN."
 #elif INVALID_TMC_SPI(E7)
   #error "An SPI driven TMC driver on E7 requires E7_CS_PIN."
+#endif
+#if NON_E_AXES > 3
+  #if INVALID_TMC_SPI(I)
+    #error "An SPI driven TMC on I requires I_CS_PIN."
+  #endif
+  #if NON_E_AXES > 4
+    #if INVALID_TMC_SPI(J)
+      #error "An SPI driven TMC on J requires J_CS_PIN."
+    #endif
+    #if NON_E_AXES > 5
+      #if INVALID_TMC_SPI(K)
+        #error "An SPI driven TMC on K requires K_CS_PIN."
+      #endif
+    #endif
+  #endif
 #endif
 #undef INVALID_TMC_SPI
 

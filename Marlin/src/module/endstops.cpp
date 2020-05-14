@@ -54,9 +54,9 @@ Endstops endstops;
 
 bool Endstops::enabled, Endstops::enabled_globally; // Initialized by settings.load()
 #if NON_E_AXES > 3
-  volatile uint8_t Endstops::hit_state;
-#else
   volatile uint16_t Endstops::hit_state;
+#else
+  volatile uint8_t Endstops::hit_state;
 #endif
 
 Endstops::esbits_t Endstops::live_state = 0;

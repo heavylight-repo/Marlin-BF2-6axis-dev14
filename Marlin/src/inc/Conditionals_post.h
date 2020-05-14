@@ -88,16 +88,16 @@
   #define Y_BED_SIZE Y_MAX_LENGTH
 #endif
 #if NON_E_AXES > 3
-  #ifndef I_SIZE
-    #define I_SIZE I_MAX_LENGTH
+  #ifndef I_BED_SIZE
+    #define I_BED_SIZE I_MAX_LENGTH
   #endif
   #if NON_E_AXES > 4
-    #ifndef J_SIZE
-      #define J_SIZE J_MAX_LENGTH
+    #ifndef J_BED_SIZE
+      #define J_BED_SIZE J_MAX_LENGTH
     #endif
     #if NON_E_AXES > 5
-      #ifndef K_SIZE
-        #define K_SIZE K_MAX_LENGTH
+      #ifndef K_BED_SIZE
+        #define K_BED_SIZE K_MAX_LENGTH
       #endif
     #endif
   #endif
@@ -112,11 +112,11 @@
 #define _X_HALF_BED ((X_BED_SIZE) / 2)
 #define _Y_HALF_BED ((Y_BED_SIZE) / 2)
 #if NON_E_AXES > 3
-  #define _I_HALF_IMAX ((I_SIZE) / 2)
+  #define _I_HALF_IMAX ((I_BED_SIZE) / 2)
   #if NON_E_AXES > 4
-    #define _J_HALF_JMAX ((J_SIZE) / 2)
+    #define _J_HALF_JMAX ((J_BED_SIZE) / 2)
     #if NON_E_AXES > 5
-      #define _K_HALF_KMAX ((K_SIZE) / 2)
+      #define _K_HALF_KMAX ((K_BED_SIZE) / 2)
     #endif
   #endif
 #endif
@@ -139,14 +139,14 @@
 #define Y_MIN_BED (Y_CENTER - _Y_HALF_BED)
 #define Y_MAX_BED (Y_MIN_BED + Y_BED_SIZE)
 #if NON_E_AXES > 3
-  #define I_MINIM (I_CENTER - _I_HALF_IMAX)
-  #define I_MAXIM (I_MINIM + I_SIZE)
+  #define I_MINIM (I_CENTER - _I_HALF_BED_SIZE)
+  #define I_MAXIM (I_MINIM + I_BED_SIZE)
   #if NON_E_AXES > 4
-    #define J_MINIM (J_CENTER - _J_HALF_IMAX)
-    #define J_MAXIM (J_MINIM + J_SIZE)
+    #define J_MINIM (J_CENTER - _J_HALF_BED_SIZE)
+    #define J_MAXIM (J_MINIM + J_BED_SIZE)
     #if NON_E_AXES > 5
-      #define K_MINIM (K_CENTER - _K_HALF_IMAX)
-      #define K_MAXIM (K_MINIM + K_SIZE)
+      #define K_MINIM (K_CENTER - _K_HALF_BED_SIZE)
+      #define K_MAXIM (K_MINIM + K_BED_SIZE)
     #endif
   #endif
 #endif

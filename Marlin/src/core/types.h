@@ -213,10 +213,6 @@ struct XYval {
   FI void set(const T px, const T py)                   { x = px; y = py; }
   FI void set(const T (&arr)[XY])                       { x = arr[0]; y = arr[1]; }
   FI void set(const T (&arr)[XYZ])                      { x = arr[0]; y = arr[1]; }
-  FI void set(const T (&arr)[XYZE])                     { x = arr[0]; y = arr[1]; }
-  #if XYZE_N > XYZE
-    FI void set(const T (&arr)[XYZE_N])                 { x = arr[0]; y = arr[1]; }
-  #endif
   FI void set(const T (&arr)[NUM_AXIS])                 { x = arr[0]; y = arr[1]; }
   #if NUM_AXIS_N > NUM_AXIS
     FI void set(const T (&arr)[NUM_AXIS_N])                 { x = arr[0]; y = arr[1]; }
