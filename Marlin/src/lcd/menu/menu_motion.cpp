@@ -99,18 +99,18 @@ static void _lcd_move_xyz(PGM_P const name, const AxisEnum axis) {
         #if NON_E_AXES > 3 // TOTO: Test for NON_E_AXES > 3
           break;
           case I_AXIS:
-            TERN_(MIN_SOFTWARE_ENDSTOP_I, min = soft_endstop.min.i;
-            TERN_(MIN_SOFTWARE_ENDSTOP_I, max = soft_endstop.max.i;
+            TERN_(MIN_SOFTWARE_ENDSTOP_I, min = soft_endstop.min.i);
+            TERN_(MIN_SOFTWARE_ENDSTOP_I, max = soft_endstop.max.i);
           #if NON_E_AXES > 4
             break;
             case J_AXIS:
-            TERN_(MIN_SOFTWARE_ENDSTOP_J, min = soft_endstop.min.j;
-            TERN_(MIN_SOFTWARE_ENDSTOP_J, max = soft_endstop.max.j;
+            TERN_(MIN_SOFTWARE_ENDSTOP_J, min = soft_endstop.min.j);
+            TERN_(MIN_SOFTWARE_ENDSTOP_J, max = soft_endstop.max.j);
             #if NON_E_AXES > 5
               break;
               case K_AXIS:
-                TERN_(MIN_SOFTWARE_ENDSTOP_K, min = soft_endstop.min.k;
-                TERN_(MIN_SOFTWARE_ENDSTOP_K, max = soft_endstop.max.k;
+                TERN_(MIN_SOFTWARE_ENDSTOP_K, min = soft_endstop.min.k);
+                TERN_(MIN_SOFTWARE_ENDSTOP_K, max = soft_endstop.max.k);
             #endif
           #endif
         #endif
