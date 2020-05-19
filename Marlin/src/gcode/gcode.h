@@ -488,6 +488,9 @@ private:
 
   TERN_(CALIBRATION_GCODE, static void G425());
 
+  #if ENABLED(LEANTRONIC)
+    static void G2000();
+  #endif
   TERN_(HAS_RESUME_CONTINUE, static void M0_M1());
 
   #if HAS_CUTTER
