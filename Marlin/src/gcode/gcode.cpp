@@ -901,6 +901,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 1001: M1001(); break;                                // M1001: [INTERNAL] Handle SD completion
       #endif
 
+      #if ENABLED(LEANTRONIC)
+        case 2000: M2000(); break;                                // M2000: LEANTRONIC CASE
+      #endif
+
       #if ENABLED(MAX7219_GCODE)
         case 7219: M7219(); break;                                // M7219: Set LEDs, columns, and rows
       #endif

@@ -53,7 +53,7 @@
  * https://sites.google.com/site/repraplogphase/calibration-of-your-reprap
  * http://www.thingiverse.com/thing:298812
  */
-#define LEANTRONIC
+
 //===========================================================================
 //============================= DELTA Printer ===============================
 //===========================================================================
