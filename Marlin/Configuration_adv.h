@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * My
  */
 #pragma once
 
@@ -274,7 +274,7 @@
  * Enable Autotemp Mode with M104/M109 F<factor> S<mintemp> B<maxtemp>.
  * Disable by sending M104/M109 with no F parameter (or F0 with AUTOTEMP_PROPORTIONAL).
  */
-#define AUTOTEMP
+//#define AUTOTEMP
 #if ENABLED(AUTOTEMP)
   #define AUTOTEMP_OLDWEIGHT    0.98
   // Turn on AUTOTEMP on M104/M109 by default using proportions set here
@@ -826,7 +826,7 @@
  * See http://hydraraptor.blogspot.com/2010/12/frequency-limit.html
  * Use M201 F<freq> G<min%> to change limits at runtime.
  */
-//#define XY_FREQUENCY_LIMIT      10 // (Hz) Maximum frequency of small zigzag infill moves. Set with M201 F<hertz>.
+//#define XY_FREQUENCY_LIMIT      15 // (Hz) Maximum frequency of small zigzag infill moves. Set with M201 F<hertz>.
 #ifdef XY_FREQUENCY_LIMIT
   #define XY_FREQUENCY_MIN_PERCENT 5 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
 #endif
@@ -916,7 +916,7 @@
   #define CALIBRATION_MEASURE_FRONT
   #define CALIBRATION_MEASURE_LEFT
   #define CALIBRATION_MEASURE_BACK
-    #if NON_E_AXES > 3
+  #if NON_E_AXES > 3
     #define CALIBRATION_MEASURE_IMIN
     #define CALIBRATION_MEASURE_IMAX
     #if NON_E_AXES > 4
@@ -1158,7 +1158,7 @@
   #elif NON_E_AXES == 5
     #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z I J E" // Use "M84XYIJE" to keep Z enabled so your bed stays in place
   #elif NON_E_AXES == 4
-    #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z I E" // Use "M84XYIE" to keep Z enabled so your bed stays in place  
+    #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z I E" // Use "M84XYIE" to keep Z enabled so your bed stays in place
   #else
     #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E" // Use "M84XYE" to keep Z enabled so your bed stays in place
   #endif
@@ -1384,7 +1384,7 @@
    * This will prevent position updates from being displayed.
    */
   #if ENABLED(U8GLIB_ST7920)
-    // Enable this option and reduce the value to optimize screen updates.
+      // Enable this option and reduce the value to optimize screen updates.
     // The normal delay is 10µs. Use the lowest value that still gives a reliable display.
     //#define DOGM_SPI_DELAY_US 5
 
@@ -1468,7 +1468,7 @@
   //#define LCD_HAOYU_FT800CB         // Haoyu with 4.3" or 5" (480x272)
   //#define LCD_HAOYU_FT810CB         // Haoyu with 5" (800x480)
   //#define LCD_ALEPHOBJECTS_CLCD_UI  // Aleph Objects Color LCD UI
-  //#define LCD_FYSETC_TFT81050       // FYSETC with 5" (800x480)
+    //#define LCD_FYSETC_TFT81050       // FYSETC with 5" (800x480)
 
   // Correct the resolution if not using the stock TFT panel.
   //#define TOUCH_UI_320x240
@@ -1967,8 +1967,8 @@
     // Load / Unload
     #define TOOLCHANGE_FS_LENGTH              12  // (mm) Load / Unload length
     #define TOOLCHANGE_FS_EXTRA_RESUME_LENGTH  0  // (mm) Extra length for better restart, fine tune by LCD/Gcode)
-    #define TOOLCHANGE_FS_RETRACT_SPEED   (50*60) // (mm/m) (Unloading)
-    #define TOOLCHANGE_FS_UNRETRACT_SPEED (25*60) // (mm/m) (On SINGLENOZZLE or Bowden loading must be slowed down)
+    #define TOOLCHANGE_FS_RETRACT_SPEED     3600 // (mm/m) (Unloading)
+    #define TOOLCHANGE_FS_UNRETRACT_SPEED   3600 // (mm/m) (On SINGLENOZZLE or Bowden loading must be slowed down)
 
     // Longer prime to clean out a SINGLENOZZLE
     #define TOOLCHANGE_FS_EXTRA_PRIME          0  // (mm) Extra priming length
@@ -2385,7 +2385,7 @@
   //#define X2_CS_PIN         -1
   //#define Y2_CS_PIN         -1
   //#define Z2_CS_PIN         -1
-  //#define Z3_CS_PIN         -1  
+  //#define Z3_CS_PIN         -1
   //#define I_CS_PIN          -1
   //#define J_CS_PIN          -1
   //#define K_CS_PIN          -1
@@ -2728,7 +2728,7 @@
     #define I_CHAIN_POS        -1
     #define I_SLEW_RATE         1
   #endif
-  
+
   #if AXIS_DRIVER_TYPE_J(L6470)
     #define J_MICROSTEPS      128
     #define J_OVERCURRENT    2000
@@ -2737,7 +2737,7 @@
     #define J_CHAIN_POS        -1
     #define J_SLEW_RATE         1
   #endif
-  
+
   #if AXIS_DRIVER_TYPE_K(L6470)
     #define K_MICROSTEPS      128
     #define K_OVERCURRENT    2000
@@ -2745,7 +2745,7 @@
     #define K_MAX_VOLTAGE     127
     #define K_CHAIN_POS        -1
     #define K_SLEW_RATE         1
-  #endif  
+  #endif
 
   #if AXIS_IS_L64XX(E0)
     #define E0_MICROSTEPS      128

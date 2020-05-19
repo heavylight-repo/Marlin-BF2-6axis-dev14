@@ -49,6 +49,9 @@
 #define E0_DIAG_PIN                         PE15  // E0
 #define E1_DIAG_PIN                         PE10  // E1
 #define E2_DIAG_PIN                         PG5   // E2
+#define I_DIAG_PIN                         PE15  // E0
+#define J_DIAG_PIN                         PE10  // E1
+#define K_DIAG_PIN                         PG5   // E2
 
 //
 // Limit Switches
@@ -89,6 +92,41 @@
   #define Z_MAX_PIN                         PG5   // E2
 #endif
 
+#ifdef I_STALL_SENSITIVITY
+  #define I_STOP_PIN                  X_DIAG_PIN
+  #if I_HOME_DIR < 0
+    #define I_MAX_PIN                       PE15  // E0
+  #else
+    #define I_MIN_PIN                       PE15  // E0
+  #endif
+#else
+  #define I_MIN_PIN                         PE15  // E0-
+  #define I_MAX_PIN                         PB10  // X-
+#endif
+
+#ifdef J_STALL_SENSITIVITY
+  #define J_STOP_PIN                  Y_DIAG_PIN
+  #if J_HOME_DIR < 0
+    #define J_MAX_PIN                       PE10  // E1
+  #else
+    #define J_MIN_PIN                       PE10  // E1
+  #endif
+#else
+  #define J_MIN_PIN                         PE10  // E1
+  #define J_MAX_PIN                         PE12  // Y-
+#endif
+
+#ifdef K_STALL_SENSITIVITY
+  #define K_STOP_PIN                  Z_DIAG_PIN
+  #if K_HOME_DIR < 0
+    #define K_MAX_PIN                       PG5   // E2
+  #else
+    #define K_MIN_PIN                       PG5   // E2
+  #endif
+#else
+  #define K_MIN_PIN                         PG5   // E2
+  #define K_MAX_PIN                         PG8   // Z-
+#endif
 //
 // Z Probe must be this pin
 //
@@ -141,6 +179,26 @@
   #define E2_CS_PIN                         PG12
 #endif
 
+#define I_STEP_PIN                         PE14
+#define I_DIR_PIN                          PA0
+#define I_ENABLE_PIN                       PC3
+#ifndef I_CS_PIN
+  #define I_CS_PIN                         PB3
+#endif
+
+#define J_STEP_PIN                         PD15
+#define J_DIR_PIN                          PE7
+#define J_ENABLE_PIN                       PA3
+#ifndef J_CS_PIN
+  #define J_CS_PIN                         PG15
+#endif
+
+#define K_STEP_PIN                         PD13
+#define K_DIR_PIN                          PG9
+#define K_ENABLE_PIN                       PF0
+#ifndef K_CS_PIN
+  #define K_CS_PIN                         PG12
+#endif
 //
 // Software SPI pins for TMC2130 stepper drivers
 //
@@ -195,6 +253,15 @@
 
   #define E2_SERIAL_TX_PIN                  PD6
   #define E2_SERIAL_RX_PIN                  PD6
+
+  #define I_SERIAL_TX_PIN                  PD4
+  #define I_SERIAL_RX_PIN                  PD4
+
+  #define J_SERIAL_TX_PIN                  PD1
+  #define J_SERIAL_RX_PIN                  PD1
+
+  #define K_SERIAL_TX_PIN                  PD6
+  #define K_SERIAL_RX_PIN                  PD6
 
   // Reduce baud rate to improve software serial reliability
   #define TMC_BAUD_RATE 19200
