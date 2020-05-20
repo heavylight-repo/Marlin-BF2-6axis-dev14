@@ -985,9 +985,31 @@
    * M122 report functions
    */
 
-  void tmc_report_all(bool print_x, const bool print_y, const bool print_z, const bool print_e) {
-    #define TMC_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL);  tmc_debug_loop(ITEM, print_x, print_y, print_z, print_e); }while(0)
-    #define DRV_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); drv_status_loop(ITEM, print_x, print_y, print_z, print_e); }while(0)
+  void tmc_report_all(bool print_x, const bool print_y, const bool print_z,
+    #if NON_E_AXES > 3
+      const bool print_i,
+      #if NON_E_AXES > 4
+        const bool print_j,
+        #if NON_E_AXES > 5
+          const bool print_k,
+        #endif
+      #endif
+    #endif
+  const bool print_e) {
+    #if NON_E_AXES == 6
+      #define TMC_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL);  tmc_debug_loop(ITEM, print_x, print_y, print_z, print_i, print_j, print_k, print_e); }while(0)
+      #define DRV_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); drv_status_loop(ITEM, print_x, print_y, print_z, print_i, print_j, print_k, print_e); }while(0) 
+    #elif NON_E_AXES == 5
+      #define TMC_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL);  tmc_debug_loop(ITEM, print_x, print_y, print_z, print_i, print_j, print_e); }while(0)
+      #define DRV_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); drv_status_loop(ITEM, print_x, print_y, print_z, print_i, print_j, print_e); }while(0)
+    #elif NON_E_AXES == 4
+      #define TMC_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL);  tmc_debug_loop(ITEM, print_x, print_y, print_z, print_i, print_e); }while(0)
+      #define DRV_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); drv_status_loop(ITEM, print_x, print_y, print_z, print_i, print_e); }while(0)
+    #else
+      #define TMC_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL);  tmc_debug_loop(ITEM, print_x, print_y, print_z, print_e); }while(0)
+      #define DRV_REPORT(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); drv_status_loop(ITEM, print_x, print_y, print_z, print_e); }while(0)
+    #endif
+
     TMC_REPORT("\t",                 TMC_CODES);
     #if HAS_DRIVER(TMC2209)
       TMC_REPORT("Address\t",        TMC_UART_ADDR);
@@ -1198,8 +1220,26 @@
     SERIAL_EOL();
   }
 
-  void tmc_get_registers(bool print_x, bool print_y, bool print_z, bool print_e) {
-    #define _TMC_GET_REG(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); tmc_get_registers(ITEM, print_x, print_y, print_z, print_e); }while(0)
+  void tmc_get_registers(bool print_x, bool print_y, bool print_z,
+    #if NON_E_AXES > 3
+      bool print_i,
+      #if NON_E_AXES > 4
+        bool print_j,
+        #if NON_E_AXES > 5
+          bool print_k,
+        #endif
+      #endif
+    #endif
+  bool print_e) {
+    #if NON_E_AXES == 6
+      #define _TMC_GET_REG(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); tmc_get_registers(ITEM, print_x, print_y, print_z, print_i, print_j, print_k, print_e); }while(0)
+    #elif NON_E_AXES == 5
+      #define _TMC_GET_REG(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); tmc_get_registers(ITEM, print_x, print_y, print_z, print_i, print_j, print_e); }while(0)
+    #elif NON_E_AXES == 4
+      #define _TMC_GET_REG(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); tmc_get_registers(ITEM, print_x, print_y, print_z, print_i, print_e); }while(0)
+    #else
+      #define _TMC_GET_REG(LABEL, ITEM) do{ SERIAL_ECHOPGM(LABEL); tmc_get_registers(ITEM, print_x, print_y, print_z, print_e); }while(0)
+    #endif			
     #define TMC_GET_REG(NAME, TABS) _TMC_GET_REG(STRINGIFY(NAME) TABS, TMC_GET_##NAME)
     _TMC_GET_REG("\t", TMC_AXIS_CODES);
     TMC_GET_REG(GCONF, "\t\t");
@@ -1350,7 +1390,18 @@ static bool test_connection(TMC &st) {
   return test_result;
 }
 
-void test_tmc_connection(const bool test_x, const bool test_y, const bool test_z, const bool test_e) {
+void test_tmc_connection(const bool test_x, const bool test_y, const bool test_z, 
+
+#if NON_E_AXES > 3
+  const bool test_i,
+  #if NON_E_AXES > 4
+    const bool test_j,
+    #if NON_E_AXES > 5
+      const bool test_k,
+    #endif
+  #endif
+#endif
+const bool test_e) {
   uint8_t axis_connection = 0;
 
   if (test_x) {
@@ -1385,6 +1436,28 @@ void test_tmc_connection(const bool test_x, const bool test_y, const bool test_z
       axis_connection += test_connection(stepperZ4);
     #endif
   }
+
+  #if NON_E_AXES > 3
+    if (test_i) {
+      #if AXIS_IS_TMC(I)
+        axis_connection += test_connection(stepperI);
+      #endif
+    }
+    #if NON_E_AXES > 4
+      if (test_j) {
+        #if AXIS_IS_TMC(J)
+          axis_connection += test_connection(stepperJ);
+        #endif
+      }
+      #if NON_E_AXES > 5
+        if (test_k) {
+          #if AXIS_IS_TMC(K)
+            axis_connection += test_connection(stepperK);
+          #endif
+        }
+      #endif
+    #endif
+  #endif
 
   if (test_e) {
     #if AXIS_IS_TMC(E0)

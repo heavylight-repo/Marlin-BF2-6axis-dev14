@@ -1578,6 +1578,33 @@ void backout_to_tmc_homing_phase(const AxisEnum axis) {
           invertDir = INVERT_Z_DIR;
           break;
       #endif
+      #if NON_E_AXES > 3
+        #ifdef Y_MICROSTEPS
+          case I_AXIS:
+            axisMicrostepSize = 256 / (I_MICROSTEPS);
+            phaseCurrent = stepperI.get_microstep_counter();
+            invertDir = INVERT_I_DIR;
+            break;
+        #endif
+        #if NON_E_AXES > 4
+          #ifdef J_MICROSTEPS
+            case J_AXIS:
+              axisMicrostepSize = 256 / (J_MICROSTEPS);
+              phaseCurrent = stepperJ.get_microstep_counter();
+              invertDir = INVERT_J_DIR;
+              break;
+          #endif
+          #if NON_E_AXES > 5
+            #ifdef K_MICROSTEPS
+              case K_AXIS:
+                axisMicrostepSize = 256 / (K_MICROSTEPS);
+                phaseCurrent = stepperK.get_microstep_counter();
+                invertDir = INVERT_K_DIR;
+                break;
+            #endif
+          #endif
+        #endif
+      #endif
       default: return;
     }
 

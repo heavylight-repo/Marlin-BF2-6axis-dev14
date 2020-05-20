@@ -245,6 +245,15 @@ void home_delta() {
       tmc_enable_stallguard(stepperX),
       tmc_enable_stallguard(stepperY),
       tmc_enable_stallguard(stepperZ)
+      #if NON_E_AXES > 3
+        ,tmc_enable_stallguard(stepperI)
+        #if NON_E_AXES > 4
+          ,tmc_enable_stallguard(stepperJ)
+          #if NON_E_AXES > 5
+            ,tmc_enable_stallguard(stepperK)
+          #endif
+        #endif
+      #endif
     };
   #endif
 
@@ -258,6 +267,16 @@ void home_delta() {
     tmc_disable_stallguard(stepperX, stealth_states.x);
     tmc_disable_stallguard(stepperY, stealth_states.y);
     tmc_disable_stallguard(stepperZ, stealth_states.z);
+    #if NON_E_AXES > 3
+      tmc_disable_stallguard(stepperI, stealth_states.i);
+      #if NON_E_AXES > 4
+        tmc_disable_stallguard(stepperJ, stealth_states.j);
+        #if NON_E_AXES > 5
+          tmc_disable_stallguard(stepperK, stealth_states.k);
+        #endif
+      #endif
+    #endif
+
   #endif
 
   endstops.validate_homing_move();
