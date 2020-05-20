@@ -33,7 +33,7 @@
  */
 #define CONFIGURATION_ADV_H_VERSION 020005
 
-#define LEANTRONIC
+//#define M2000_ENABLE      //Added by TE (Define M2000_PROBE_PIN on pins_BTT_SKR_PRO_V1_1.h)
 
 // @section temperature
 

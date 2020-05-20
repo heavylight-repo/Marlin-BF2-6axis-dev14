@@ -22,23 +22,30 @@
 
 #include "../../inc/MarlinConfig.h"
 
+    /**
+     ** M2000: Probe - Created by TE
+    */
 
-#if ENABLED(LEANTRONIC)
+#if ENABLED(M2000_ENABLE)
 
-#include "../gcode.h"
+  #if ENABLED(SDSUPPORT)
 
-/**
- ** M2000: Probe Vassel
- */
+    #include "../gcode.h"
+    #include "../../sd/cardreader.h"
 
-void GcodeSuite::M2000() {
+    void GcodeSuite::M2000() {
 
-  if (READ(Z_MIN_PIN) == true) {
-    SERIAL_ECHOLNPGM("Probe test pin = TRUE");
-  }
-  else {
-    SERIAL_ECHOLNPGM("Probe test pin = FALSE");
-  }
-}
+      if (READ(M2000_PROBE_PIN) == true) {
+        SERIAL_ECHOLNPGM("M2000_PROBE = TRUE");    //Print M2000_PROBE TRUE
+      }
+      else {
+        SERIAL_ECHOLNPGM("M2000_PROBE = FALSE");   //Print M2000_PROBE FALSE
 
-#endif // LEANTRONIC
+        if (IS_SD_PRINTING()){
+        card.flag.abort_sd_printing = true;         //Abort the current SD print job (started with M24)
+        }
+      }
+    }
+  #endif // SDSUPPORT_ENABLE
+
+#endif // M2000_ENABLE

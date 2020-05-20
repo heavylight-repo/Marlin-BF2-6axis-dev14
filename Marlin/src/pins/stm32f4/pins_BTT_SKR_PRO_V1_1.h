@@ -36,6 +36,14 @@
 #endif
 
 //
+// M2000_PROBE
+//
+#ifdef M2000_ENABLE
+  #define M2000_PROBE_PIN                   PA1  //M2000_PROBE_PIN
+#endif
+
+
+//
 // Servos
 //
 #define SERVO0_PIN                          PA1

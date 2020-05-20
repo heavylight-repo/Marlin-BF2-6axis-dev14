@@ -848,7 +848,7 @@ private:
     static void M1000();
   #endif
 
-  #if ENABLED(LEANTRONIC)
+  #if ENABLED(M2000_ENABLE)
     static void M2000();
   #endif
 
