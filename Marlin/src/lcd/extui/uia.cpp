@@ -459,6 +459,23 @@ namespace ExtUI {
         #if AXIS_IS_TMC(Z)
           case Z: return stepperZ.getMilliamps();
         #endif
+
+        #if NON_E_AXES > 3
+          #if AXIS_IS_TMC(I)
+            case I: return stepperI.getMilliamps();
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_IS_TMC(J)
+              case J: return stepperJ.getMilliamps();
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_IS_TMC(K)
+                case K: return stepperK.getMilliamps();
+              #endif
+            #endif
+          #endif
+        #endif
+
         default: return NAN;
       };
     }
@@ -497,6 +514,21 @@ namespace ExtUI {
         #endif
         #if AXIS_IS_TMC(Z)
           case Z: stepperZ.rms_current(constrain(mA, 500, 1500)); break;
+        #endif
+        #if NON_E_AXES > 3
+          #if AXIS_IS_TMC(I)
+            case I: stepperI.rms_current(constrain(mA, 500, 1500)); break;
+          #endif
+          #if NON_E_AXES > 4
+            #if AXIS_IS_TMC(J)
+              case J: stepperJ.rms_current(constrain(mA, 500, 1500)); break;
+            #endif
+            #if NON_E_AXES > 5
+              #if AXIS_IS_TMC(K)
+                case K: stepperK.rms_current(constrain(mA, 500, 1500)); break;
+              #endif
+            #endif
+          #endif
         #endif
         default: break;
       };
@@ -537,6 +569,21 @@ namespace ExtUI {
         #if Z_SENSORLESS && AXIS_HAS_STALLGUARD(Z)
           case Z: return stepperZ.homing_threshold();
         #endif
+        #if NON_E_AXES > 3
+          #if I_SENSORLESS && AXIS_HAS_STALLGUARD(I)
+            case I: return stepperI.homing_threshold();
+          #endif
+          #if NON_E_AXES > 4
+            #if J_SENSORLESS && AXIS_HAS_STALLGUARD(J)
+              case J: return stepperJ.homing_threshold();
+            #endif
+            #if NON_E_AXES > 5
+              #if K_SENSORLESS && AXIS_HAS_STALLGUARD(K)
+                case K: return stepperK.homing_threshold();
+              #endif
+            #endif
+          #endif
+        #endif
         default: return 0;
       }
     }
@@ -557,6 +604,27 @@ namespace ExtUI {
           case Z: stepperZ.homing_threshold(value); break;
         #else
           UNUSED(value);
+        #endif
+        #if NON_E_AXES > 3
+          #if I_SENSORLESS && AXIS_HAS_STALLGUARD(I)
+            case I: stepperI.homing_threshold(value); break;
+          #else
+            UNUSED(value);
+          #endif
+          #if NON_E_AXES > 4
+            #if J_SENSORLESS && AXIS_HAS_STALLGUARD(J)
+              case J: stepperJ.homing_threshold(value); break;
+            #else
+              UNUSED(value);
+            #endif
+            #if NON_E_AXES > 5
+              #if K_SENSORLESS && AXIS_HAS_STALLGUARD(K)
+                case K: stepperK.homing_threshold(value); break;
+              #else
+                UNUSED(value);
+              #endif
+            #endif
+          #endif
         #endif
         default: break;
       }

@@ -103,12 +103,12 @@ enum StealthIndex : uint8_t { STEALTH_AXIS_XY, STEALTH_AXIS_Z,
   TMC_SPI_DEFINE(Z4, Z);
 #endif
 #if NON_E_AXES > 3
-  #if AXIS_HAS_SPI(J)
-    TMC_SPI_DEFINE(J, J);
+  #if AXIS_HAS_SPI(I)
+    TMC_SPI_DEFINE(I, I);
   #endif
   #if NON_E_AXES > 4
-    #if AXIS_HAS_SPI(K)
-      TMC_SPI_DEFINE(K, K);
+    #if AXIS_HAS_SPI(J)
+      TMC_SPI_DEFINE(J, J);
     #endif
     #if NON_E_AXES > 5
       #if AXIS_HAS_SPI(K)
@@ -370,11 +370,11 @@ enum StealthIndex : uint8_t { STEALTH_AXIS_XY, STEALTH_AXIS_Z,
   #endif
 
   #if NON_E_AXES == 6
-    enum TMCAxis : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, K, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
+    enum TMCAxis : uint8_t { X, Y, Z, I, J, K, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
   #elif NON_E_AXES == 5
-    enum TMCAxis : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4, I, J, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
+    enum TMCAxis : uint8_t { X, Y, Z, I, J, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
   #elif NON_E_AXES == 4
-    enum TMCAxis : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4, I, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
+    enum TMCAxis : uint8_t { X, Y, Z, I, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
   #else
     enum TMCAxis : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5, E6, E7, TOTAL };
   #endif

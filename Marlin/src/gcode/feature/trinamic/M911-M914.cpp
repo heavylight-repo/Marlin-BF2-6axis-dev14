@@ -97,6 +97,21 @@
     #if M91x_USE_E(7)
       tmc_report_otpw(stepperE7);
     #endif
+    #if NON_E_AXES > 3
+      #if M91x_USE(I)
+        tmc_report_otpw(stepperI);
+      #endif
+      #if NON_E_AXES > 4
+        #if M91x_USE(J)
+          tmc_report_otpw(stepperJ);
+        #endif
+        #if NON_E_AXES > 5
+          #if M91x_USE(K)
+            tmc_report_otpw(stepperK);
+          #endif
+        #endif
+      #endif
+    #endif
   }
 
   /**
@@ -130,13 +145,38 @@
       constexpr bool hasZ = false;
     #endif
 
+    #if M91x_SOME_I
+      const bool hasI = parser.seen(axis_codes.i);
+    #else
+      constexpr bool hasI = false;
+    #endif
+    #if M91x_SOME_J
+      const bool hasJ = parser.seen(axis_codes.j);
+    #else
+      constexpr bool hasJ = false;
+    #endif
+    #if M91x_SOME_K
+      const bool hasK = parser.seen(axis_codes.k);
+    #else
+      constexpr bool hasK = false;
+    #endif
+
     #if M91x_SOME_E
       const bool hasE = parser.seen(axis_codes.e);
     #else
       constexpr bool hasE = false;
     #endif
 
-    const bool hasNone = !hasX && !hasY && !hasZ && !hasE;
+    const bool hasNone = !hasX && !hasY && !hasZ && !hasE 
+      #if NON_E_AXES > 3
+        && !hasI 
+        #if NON_E_AXES > 4
+          && !hasJ
+          #if NON_E_AXES > 5
+            && !hasK
+          #endif
+        #endif
+      #endif
 
     #if M91x_SOME_X
       const int8_t xval = int8_t(parser.byteval(axis_codes.x, 0xFF));
@@ -171,6 +211,25 @@
       #endif
       #if M91x_USE(Z4)
         if (hasNone || zval == 4 || (hasZ && zval < 0)) tmc_clear_otpw(stepperZ4);
+      #endif
+    #endif
+
+    #if M91x_SOME_I
+      const int8_t ival = int8_t(parser.byteval(axis_codes.i, 0xFF));
+      #if M91x_USE(I)
+        if (hasNone || ival == 1 || (hasI && ival < 0)) tmc_clear_otpw(stepperI);
+      #endif
+    #endif
+    #if M91x_SOME_J
+      const int8_t jval = int8_t(parser.byteval(axis_codes.j, 0xFF));
+      #if M91x_USE(J)
+        if (hasNone || jval == 1 || (hasJ && jval < 0)) tmc_clear_otpw(stepperJ);
+      #endif
+    #endif
+    #if M91x_SOME_K
+      const int8_t kval = int8_t(parser.byteval(axis_codes.k, 0xFF));
+      #if M91x_USE(K)
+        if (hasNone || kval == 1 || (hasK && kval < 0)) tmc_clear_otpw(stepperK);
       #endif
     #endif
 
@@ -216,7 +275,16 @@
     #define TMC_SET_PWMTHRS_E(E) stepperE##E.set_pwm_thrs(value)
 
     bool report = true;
-    #if AXIS_IS_TMC(X) || AXIS_IS_TMC(X2) || AXIS_IS_TMC(Y) || AXIS_IS_TMC(Y2) || AXIS_IS_TMC(Z) || AXIS_IS_TMC(Z2) || AXIS_IS_TMC(Z3) || AXIS_IS_TMC(Z4)
+    #if AXIS_IS_TMC(X) || AXIS_IS_TMC(X2) || AXIS_IS_TMC(Y) || AXIS_IS_TMC(Y2) || AXIS_IS_TMC(Z) || AXIS_IS_TMC(Z2) || AXIS_IS_TMC(Z3) || AXIS_IS_TMC(Z4) 
+      #if NON_E_AXES > 3
+        || AXIS_IS_TMC(I) 
+        #if NON_E_AXES > 4
+          || AXIS_IS_TMC(J) 
+          #if NON_E_AXES > 5
+            || AXIS_IS_TMC(K)
+          #endif
+        #endif
+      #endif
       const uint8_t index = parser.byteval('I');
     #endif
     LOOP_XYZE(i) if (int32_t value = parser.longval(axis_codes[i])) {
@@ -238,6 +306,29 @@
             if (!(index & 1)) TMC_SET_PWMTHRS(Y,Y2);
           #endif
           break;
+          
+          #if NON_E_AXES > 3
+            case I_AXIS:
+              #if AXIS_HAS_STEALTHCHOP(I)
+                if (index < 2) TMC_SET_PWMTHRS(I,I);
+              #endif
+              break;
+            #if NON_E_AXES > 4
+              case J_AXIS:
+                #if AXIS_HAS_STEALTHCHOP(J)
+                  if (index < 2) TMC_SET_PWMTHRS(J,J);
+                #endif
+                break;
+              #if NON_E_AXES > 5
+                case K_AXIS:
+                  #if AXIS_HAS_STEALTHCHOP(K)
+                    if (index < 2) TMC_SET_PWMTHRS(K,K);
+                  #endif
+                  break;
+                #endif
+              #endif
+            #endif
+
         case Z_AXIS:
           #if AXIS_HAS_STEALTHCHOP(Z)
             if (index < 2) TMC_SET_PWMTHRS(Z,Z);
@@ -312,6 +403,23 @@
       #if AXIS_HAS_STEALTHCHOP(Z4)
         TMC_SAY_PWMTHRS(Z,Z4);
       #endif
+
+      #if NON_E_AXES > 3
+        #if AXIS_HAS_STEALTHCHOP(I)
+          TMC_SAY_PWMTHRS(I,I);
+        #endif
+        #if NON_E_AXES > 4
+          #if AXIS_HAS_STEALTHCHOP(J)
+            TMC_SAY_PWMTHRS(J,J);
+          #endif
+          #if NON_E_AXES > 5
+            #if AXIS_HAS_STEALTHCHOP(K)
+              TMC_SAY_PWMTHRS(K,K);
+            #endif
+          #endif
+        #endif
+      #endif
+
       #if E_STEPPERS && AXIS_HAS_STEALTHCHOP(E0)
         TMC_SAY_PWMTHRS_E(0);
       #endif

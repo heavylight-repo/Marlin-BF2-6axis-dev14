@@ -65,6 +65,28 @@
 #undef TEST3
 #undef TEST4
 
+#if NON_E_AXES == 3 
+  #if EXTRUDERS == 1
+    #if NUM_AXIS != 4
+      #error "NON_E_AXES 3 and EXTRUDERS 1 does not yield NUM_AXIS 4."
+    #endif
+  #elif EXTRUDERS == 0
+    #if NUM_AXIS != 3
+      #error "NON_E_AXES 3 and EXTRUDERS 0 does not yield NUM_AXIS 3."
+    #endif
+  #endif
+#elif NON_E_AXES == 4 
+  #if EXTRUDERS == 1
+    #if NUM_AXIS != 5
+      #error "NON_E_AXES 4 and EXTRUDERS 1 does not yield NUM_AXIS 5."
+    #endif
+  #elif EXTRUDERS == 0
+    #if NUM_AXIS != 4
+      #error "NON_E_AXES 4 and EXTRUDERS 0 does not yield NUM_AXIS 4."
+    #endif
+  #endif
+#endif
+
 /**
  * We try our best to include sanity checks for all changed configuration
  * directives because users have a tendency to use outdated config files with

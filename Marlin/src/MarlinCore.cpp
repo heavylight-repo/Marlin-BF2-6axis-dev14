@@ -1133,7 +1133,17 @@ void setup() {
   #endif
 
   #if HAS_TRINAMIC_CONFIG && DISABLED(PSU_DEFAULT_OFF)
-    SETUP_RUN(test_tmc_connection(true, true, true, true));
+    SETUP_RUN(test_tmc_connection(true, true, true, 
+	   #if NON_E_AXES > 3
+		  true, 
+		  #if NON_E_AXES > 4
+			true, 
+			#if NON_E_AXES > 5
+			  true, 
+			#endif
+		  #endif
+		#endif
+	true));
   #endif
 
   #if ENABLED(PRUSA_MMU2)

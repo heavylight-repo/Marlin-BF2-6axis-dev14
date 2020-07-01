@@ -511,6 +511,11 @@
 /**
  * DISTINCT_E_FACTORS affects how some E factors are accessed
  */
+#if EXTRUDERS == 0
+  #define NUM_AXIS (NON_E_AXES)
+#else
+  #define NUM_AXIS (NON_E_AXES + 1)
+#endif
 #if ENABLED(DISTINCT_E_FACTORS) && E_STEPPERS > 1
   #define DISTINCT_E E_STEPPERS
   #define XYZE_N (XYZ + E_STEPPERS)

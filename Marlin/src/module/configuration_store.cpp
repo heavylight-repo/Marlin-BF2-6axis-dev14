@@ -1006,11 +1006,11 @@ void MarlinSettings::postprocess() {
           tmc_stepper_current.Z4 = stepperZ4.getMilliamps();
         #endif
         #if NON_E_AXES > 3
-          #if AXIS_IS_TMC(Z)
+          #if AXIS_IS_TMC(I)
             tmc_stepper_current.I = stepperI.getMilliamps();
           #endif
           #if NON_E_AXES > 4
-            #if AXIS_IS_TMC(I)
+            #if AXIS_IS_TMC(J)
               tmc_stepper_current.J = stepperJ.getMilliamps();
             #endif
             #if NON_E_AXES > 5
@@ -1195,9 +1195,19 @@ void MarlinSettings::postprocess() {
         TERN_(Z2_SENSORLESS, tmc_sgt.Z2 = stepperZ2.homing_threshold());
         TERN_(Z3_SENSORLESS, tmc_sgt.Z3 = stepperZ3.homing_threshold());
         TERN_(Z4_SENSORLESS, tmc_sgt.Z4 = stepperZ4.homing_threshold());
+        #if NON_E_AXES > 3
+          TERN_(I_SENSORLESS,  tmc_sgt.I  = stepperI.homing_threshold());
+          #if NON_E_AXES > 4
+            TERN_(J_SENSORLESS,  tmc_sgt.J  = stepperJ.homing_threshold());
+            #if NON_E_AXES > 5
+              TERN_(K_SENSORLESS,  tmc_sgt.K  = stepperK.homing_threshold());
+            #endif
+          #endif
+        #endif
+
       #endif
       EEPROM_WRITE(tmc_sgt);
-    } // TODO (DerAndere): Add support for NON_E_AXES > 3
+    }
 
     //
     // TMC stepping mode
@@ -2073,7 +2083,7 @@ void MarlinSettings::postprocess() {
             #if NON_E_AXES > 3
               TERN_(I_SENSORLESS,  stepperI.homing_threshold(tmc_sgt.I));
               #if NON_E_AXES > 4
-                TERN_(I_SENSORLESS,  stepperJ.homing_threshold(tmc_sgt.J));
+                TERN_(J_SENSORLESS,  stepperJ.homing_threshold(tmc_sgt.J));
                 #if NON_E_AXES > 5
                   TERN_(K_SENSORLESS,  stepperK.homing_threshold(tmc_sgt.K));
                 #endif
@@ -3405,7 +3415,16 @@ void MarlinSettings::reset() {
        */
       CONFIG_ECHO_HEADING("Stepper driver current:");
 
-      #if AXIS_IS_TMC(X) || AXIS_IS_TMC(Y) || AXIS_IS_TMC(Z)
+      #if AXIS_IS_TMC(X) || AXIS_IS_TMC(Y) || AXIS_IS_TMC(Z) 
+        #if NON_E_AXES > 3
+          || AXIS_IS_TMC(I)
+          #if NON_E_AXES > 4
+            || AXIS_IS_TMC(J) 
+            #if NON_E_AXES > 5
+              || AXIS_IS_TMC(K)
+            #endif
+          #endif
+        #endif
         say_M906(forReplay);
         #if AXIS_IS_TMC(X)
           SERIAL_ECHOPAIR_P(SP_X_STR, stepperX.getMilliamps());
@@ -3458,8 +3477,7 @@ void MarlinSettings::reset() {
         say_M906(forReplay);
         SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.getMilliamps());
       #endif
-
-      #if NON_E_AXES > 3
+      #if NON_E_AXES > 3 // TODO (DerAndere): Test for NON_E_AXES > 3
         #if AXIS_IS_TMC(I)
           say_M906(forReplay);
           SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.getMilliamps());
@@ -3477,7 +3495,6 @@ void MarlinSettings::reset() {
           #endif
         #endif
       #endif
-
       #if AXIS_IS_TMC(E0)
         say_M906(forReplay);
         SERIAL_ECHOLNPAIR(" T0 E", stepperE0.getMilliamps());
@@ -3517,7 +3534,7 @@ void MarlinSettings::reset() {
        */
       #if ENABLED(HYBRID_THRESHOLD)
         CONFIG_ECHO_HEADING("Hybrid Threshold:");
-        #if AXIS_HAS_STEALTHCHOP(X) || AXIS_HAS_STEALTHCHOP(Y) || AXIS_HAS_STEALTHCHOP(Z)
+        #if AXIS_HAS_STEALTHCHOP(X) || AXIS_HAS_STEALTHCHOP(Y) || AXIS_HAS_STEALTHCHOP(Z) || AXIS_HAS_STEALTHCHOP(I) || AXIS_HAS_STEALTHCHOP(J) || AXIS_HAS_STEALTHCHOP(K)
           say_M913(forReplay);
           #if AXIS_HAS_STEALTHCHOP(X)
             SERIAL_ECHOPAIR_P(SP_X_STR, stepperX.get_pwm_thrs());
@@ -3528,6 +3545,25 @@ void MarlinSettings::reset() {
           #if AXIS_HAS_STEALTHCHOP(Z)
             SERIAL_ECHOPAIR_P(SP_Z_STR, stepperZ.get_pwm_thrs());
           #endif
+          #if NON_E_AXES > 3
+            #if AXIS_HAS_STEALTHCHOP(I)
+              say_M913(forReplay);
+              SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.get_pwm_thrs());
+            #endif
+            #if NON_E_AXES > 4
+              #if AXIS_HAS_STEALTHCHOP(J)
+                say_M913(forReplay);
+                SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.get_pwm_thrs());
+              #endif
+              #if NON_E_AXES > 5
+                #if AXIS_HAS_STEALTHCHOP(K)
+                  say_M913(forReplay);
+                  SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.get_pwm_thrs());
+                #endif
+              #endif
+            #endif
+          #endif
+
           SERIAL_EOL();
         #endif
 
@@ -3555,24 +3591,7 @@ void MarlinSettings::reset() {
           say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.get_pwm_thrs());
         #endif
-        #if NON_E_AXES > 3
-          #if AXIS_HAS_STEALTHCHOP(I)
-            say_M913(forReplay);
-            SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.get_pwm_thrs());
-          #endif
-          #if NON_E_AXES > 4
-            #if AXIS_HAS_STEALTHCHOP(J)
-              say_M913(forReplay);
-              SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.get_pwm_thrs());
-            #endif
-            #if NON_E_AXES > 5
-              #if AXIS_HAS_STEALTHCHOP(K)
-                say_M913(forReplay);
-                SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.get_pwm_thrs());
-              #endif
-            #endif
-          #endif
-        #endif
+
         #if AXIS_HAS_STEALTHCHOP(E0)
           say_M913(forReplay);
           SERIAL_ECHOLNPAIR(" T0 E", stepperE0.get_pwm_thrs());
@@ -3613,7 +3632,7 @@ void MarlinSettings::reset() {
        */
       #if USE_SENSORLESS
         CONFIG_ECHO_HEADING("StallGuard threshold:");
-        #if X_SENSORLESS || Y_SENSORLESS || Z_SENSORLESS
+        #if X_SENSORLESS || Y_SENSORLESS || Z_SENSORLESS || I_SENSORLESS || J_SENSORLESS || K_SENSORLESS
           CONFIG_ECHO_START();
           say_M914();
           #if X_SENSORLESS
@@ -3625,6 +3644,22 @@ void MarlinSettings::reset() {
           #if Z_SENSORLESS
             SERIAL_ECHOPAIR_P(SP_Z_STR, stepperZ.homing_threshold());
           #endif
+          #if NON_E_AXES > 3
+            #if I_SENSORLESS
+              SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.homing_threshold());
+            #endif
+            #if NON_E_AXES > 4
+              #if J_SENSORLESS
+                SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.homing_threshold());
+              #endif
+              #if NON_E_AXES > 5
+                #if K_SENSORLESS
+                  SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.homing_threshold());
+                #endif
+              #endif
+            #endif
+          #endif
+
           SERIAL_EOL();
         #endif
 
@@ -3654,23 +3689,6 @@ void MarlinSettings::reset() {
           CONFIG_ECHO_START();
           say_M914();
           SERIAL_ECHOLNPAIR(" I3 Z", stepperZ4.homing_threshold());
-        #endif
-        #if NON_E_AXES > 3
-          #if I_SENSORLESS
-            CONFIG_ECHO_START();
-            say_M914();
-            SERIAL_ECHOLNPAIR(SP_I_STR, stepperI.homing_threshold());
-          #endif
-          #if NON_E_AXES > 4
-            #if J_SENSORLESS
-              SERIAL_ECHOLNPAIR(SP_J_STR, stepperJ.homing_threshold());
-            #endif
-            #if NON_E_AXES > 5
-              #if K_SENSORLESS
-                SERIAL_ECHOLNPAIR(SP_K_STR, stepperK.homing_threshold());
-              #endif
-            #endif
-          #endif
         #endif
 
       #endif // USE_SENSORLESS
