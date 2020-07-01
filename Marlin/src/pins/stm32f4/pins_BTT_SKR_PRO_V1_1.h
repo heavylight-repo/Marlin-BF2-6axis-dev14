@@ -73,7 +73,7 @@
   #endif
 #else
   #define X_MIN_PIN                         PB10  // X-
-  #define X_MAX_PIN                         PE15  // E0
+  #define X_MAX_PIN                         PE15  // X+
 #endif
 
 #ifdef Y_STALL_SENSITIVITY
@@ -85,7 +85,7 @@
   #endif
 #else
   #define Y_MIN_PIN                         PE12  // Y-
-  #define Y_MAX_PIN                         PE10  // E1
+  #define Y_MAX_PIN                         PE10  // Y+
 #endif
 
 #ifdef Z_STALL_SENSITIVITY
@@ -97,7 +97,7 @@
   #endif
 #else
   #define Z_MIN_PIN                         PG8   // Z-
-  #define Z_MAX_PIN                         PG5   // E2
+  #define Z_MAX_PIN                         PG5   // Z+
 #endif
 
 #ifdef I_STALL_SENSITIVITY
@@ -108,8 +108,8 @@
     #define I_MIN_PIN                       PE15  // E0
   #endif
 #else
-  #define I_MIN_PIN                         PE15  // E0-
-  #define I_MAX_PIN                         PB10  // X-
+  #define I_MIN_PIN                         PE15  // I-
+  #define I_MAX_PIN                         PB10  // I+
 #endif
 
 #ifdef J_STALL_SENSITIVITY
@@ -120,8 +120,8 @@
     #define J_MIN_PIN                       PE10  // E1
   #endif
 #else
-  #define J_MIN_PIN                         PE10  // E1
-  #define J_MAX_PIN                         PE12  // Y-
+  #define J_MIN_PIN                         PE10  // J-
+  #define J_MAX_PIN                         PE12  // J+
 #endif
 
 #ifdef K_STALL_SENSITIVITY
@@ -132,8 +132,8 @@
     #define K_MIN_PIN                       PG5   // E2
   #endif
 #else
-  #define K_MIN_PIN                         PG5   // E2
-  #define K_MAX_PIN                         PG8   // Z-
+  #define K_MIN_PIN                         PG5   // K-
+  #define K_MAX_PIN                         PG8   // K+
 #endif
 //
 // Z Probe must be this pin

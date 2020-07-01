@@ -33,7 +33,7 @@
  */
 #define CONFIGURATION_ADV_H_VERSION 020005
 
-//#define M2000_ENABLE      //Added by TE (Define M2000_PROBE_PIN on pins_BTT_SKR_PRO_V1_1.h)
+//#define M2000_ENABLE      //Added by TE (Define M2000_PROBE_PIN on pins_BTT_SKR_PRO_V1_1.h) //Tobbe
 
 // @section temperature
 
@@ -606,8 +606,8 @@
 //#define SENSORLESS_BACKOFF_MM  { 2, 2 }     // (mm) Backoff from endstops before sensorless homing
 
 #if NON_E_AXES == 6
-  #define HOMING_BUMP_MM      { 5, 5, 2, 2, 2, 2 }       // (mm) Backoff from endstops after first bump
-  #define HOMING_BUMP_DIVISOR { 2, 2, 4, 4, 4, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+  #define HOMING_BUMP_MM      { 5, 5, 5, 5, 5, 5 }       // (mm) Backoff from endstops after first bump  //Tobbe
+  #define HOMING_BUMP_DIVISOR { 2, 2, 2, 2, 2, 2 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate) //Tobbe
 
   //#define HOMING_BACKOFF_POST_MM { 2, 2, 2, 2, 2, 2 }  // (mm) Backoff from endstops after homing
 #elif NON_E_AXES == 5
@@ -792,7 +792,7 @@
 // Default stepper release if idle. Set to 0 to deactivate.
 // Steppers will shut down DEFAULT_STEPPER_DEACTIVE_TIME seconds after the last move when DISABLE_INACTIVE_? is true.
 // Time can be set by M18 and M84.
-#define DEFAULT_STEPPER_DEACTIVE_TIME 120
+#define DEFAULT_STEPPER_DEACTIVE_TIME 0 //Tobbe
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set to false if the nozzle will fall down on your printed part when print has finished.
@@ -1048,7 +1048,7 @@
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
   #if NON_E_AXES == 6
-    #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 4*60, 4*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, I, J, K, E from panel
+    #define MANUAL_FEEDRATE { 50*60, 50*60, 50*60, 50*60, 50*60, 50*60, 50*60 } // Feedrates for manual moves along X, Y, Z, I, J, K, E from panel //Tobbe
   #elif NON_E_AXES == 5
     #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 4*60, 4*60, 60 } // Feedrates for manual moves along X, Y, Z, I, J, E from panel
   #elif NON_E_AXES == 4
@@ -2488,7 +2488,7 @@
    * Define you own with
    * { <off_time[1..15]>, <hysteresis_end[-3..12]>, hysteresis_start[1..8] }
    */
-  #define CHOPPER_TIMING CHOPPER_DEFAULT_12V
+  #define CHOPPER_TIMING CHOPPER_DEFAULT_24V //Tobbe
 
   /**
    * Monitor Trinamic drivers
@@ -2501,7 +2501,7 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  //#define MONITOR_DRIVER_STATUS
+  #define MONITOR_DRIVER_STATUS //Tobbe
 
   #if ENABLED(MONITOR_DRIVER_STATUS)
     #define CURRENT_STEP_DOWN     50  // [mA]
@@ -2522,16 +2522,16 @@
   #define X2_HYBRID_THRESHOLD    100
   #define Y_HYBRID_THRESHOLD     100
   #define Y2_HYBRID_THRESHOLD    100
-  #define Z_HYBRID_THRESHOLD       3
+  #define Z_HYBRID_THRESHOLD     100 //Tobbe
   #define Z2_HYBRID_THRESHOLD      3
   #define Z3_HYBRID_THRESHOLD      3
   #define Z4_HYBRID_THRESHOLD      3
   #if NON_E_AXES > 3
-    #define I_HYBRID_THRESHOLD     3
+    #define I_HYBRID_THRESHOLD   100 //Tobbe
     #if NON_E_AXES > 4
-      #define J_HYBRID_THRESHOLD   3
+      #define J_HYBRID_THRESHOLD  100 //Tobbe
       #if NON_E_AXES > 5
-        #define K_HYBRID_THRESHOLD 3
+        #define K_HYBRID_THRESHOLD 100 //Tobbe
       #endif
     #endif
   #endif
@@ -2608,7 +2608,7 @@
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continous reporting.
    */
-  //#define TMC_DEBUG
+  #define TMC_DEBUG //Tobbe
 
   /**
    * You can set your own advanced settings by filling in predefined functions.
@@ -3549,7 +3549,7 @@
 //
 // M43 - display pin status, toggle pins, watch pins, watch endstops & toggle LED, test servo probe
 //
-//#define PINS_DEBUGGING
+#define PINS_DEBUGGING //Tobbe
 
 // Enable Marlin dev mode which adds some special commands
 //#define MARLIN_DEV_MODE

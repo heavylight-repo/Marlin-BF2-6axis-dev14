@@ -704,15 +704,15 @@
 #define Y_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
 #define Z_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
 #define I_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define K_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
+#define J_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define K_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define I_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define J_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define K_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
 
 /**
  * Stepper Drivers
@@ -738,9 +738,9 @@
 //#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
-#define I_DRIVER_TYPE  TMC2209
-#define J_DRIVER_TYPE  TMC2209
-#define K_DRIVER_TYPE  TMC2209
+#define I_DRIVER_TYPE TMC2209
+#define J_DRIVER_TYPE TMC2209
+#define K_DRIVER_TYPE TMC2209
 //#define E0_DRIVER_TYPE A4988
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
@@ -794,7 +794,7 @@
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
 #if NON_E_AXES == 6
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 4000, 4000, 500}
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 80, 80, 80, 80, 80} //Tobbe
 #elif NON_E_AXES == 5
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 4000, 4000, 500}
 #elif NON_E_AXES == 4
@@ -808,7 +808,7 @@
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
 #if NON_E_AXES == 6
-  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5, 5, 5, 25 }
+  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 300, 300, 300, 300, 300 } //Tobbe
 #elif NON_E_AXES == 5
   #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 5, 5, 25 }
 #elif NON_E_AXES == 4
@@ -837,7 +837,7 @@
  *                                      X, Y, Z, [I ,[J ,[K ,]]] E0 [, E1[, E2...]]
  */
 #if NON_E_AXES == 6
-  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 100, 100, 10000 }
+  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 3000, 3000, 3000, 3000, 3000 } //Tobbe
 #elif NON_E_AXES == 5
   #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 100, 100, 10000 }
 #elif NON_E_AXES == 4
@@ -1198,7 +1198,7 @@
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #define INVERT_X_DIR false
 #define INVERT_Y_DIR false
-#define INVERT_Z_DIR true
+#define INVERT_Z_DIR false
 #if NON_E_AXES > 3
   #define INVERT_I_DIR false
   #if NON_E_AXES > 4
@@ -1249,25 +1249,27 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 220
-#define Y_BED_SIZE 220
+#define X_BED_SIZE 1000 //Tobbe
+#define Y_BED_SIZE 600 //Tobbe
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS -33
-#define Y_MIN_POS -10
-#define Z_MIN_POS 0
-#define X_MAX_POS X_BED_SIZE
-#define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 240
+#define X_MIN_POS -1000 //Tobbe
+#define Y_MIN_POS -1000 //Tobbe
+#define Z_MIN_POS -1000 //Tobbe
+//#define X_MAX_POS X_BED_SIZE
+//#define Y_MAX_POS Y_BED_SIZE
+#define X_MAX_POS 1000 //Tobbe
+#define Y_MAX_POS 1000 //Tobbe
+#define Z_MAX_POS 1000 //Tobbe
 #if NON_E_AXES > 3
-  #define I_MIN_POS 0
-  #define I_MAX_POS 70
+  #define I_MIN_POS -1000 //Tobbe
+  #define I_MAX_POS 1000 //Tobbe
   #if NON_E_AXES > 4
-    #define J_MIN_POS 0
-    #define J_MAX_POS 70
+    #define J_MIN_POS -1000 //Tobbe
+    #define J_MAX_POS 1000 //Tobbe
     #if NON_E_AXES > 5
-      #define K_MIN_POS 0
-      #define K_MAX_POS 70
+      #define K_MIN_POS -1000 //Tobbe
+      #define K_MAX_POS 1000 //Tobbe
     #endif
   #endif
 #endif
@@ -1282,7 +1284,7 @@
  */
 
 // Min software endstops constrain movement within minimum coordinate bounds
-#define MIN_SOFTWARE_ENDSTOPS
+//#define MIN_SOFTWARE_ENDSTOPS
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
@@ -1293,7 +1295,7 @@
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
-#define MAX_SOFTWARE_ENDSTOPS
+//#define MAX_SOFTWARE_ENDSTOPS
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
@@ -1543,13 +1545,13 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (100*60)
-#define HOMING_FEEDRATE_Z  (4*60)
+#define HOMING_FEEDRATE_Z (100*60) //Tobbe
 #if NON_E_AXES > 3
-  #define HOMING_FEEDRATE_I (4*60)
+  #define HOMING_FEEDRATE_I (100*60) //Tobbe
   #if NON_E_AXES > 4
-    #define HOMING_FEEDRATE_J (4*60)
+    #define HOMING_FEEDRATE_J (100*60) //Tobbe
     #if NON_E_AXES > 5
-      #define HOMING_FEEDRATE_K (4*60)
+      #define HOMING_FEEDRATE_K (100*60) //Tobbe
     #endif
   #endif
 #endif
